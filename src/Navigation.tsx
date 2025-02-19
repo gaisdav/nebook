@@ -14,11 +14,7 @@ export function Navigation() {
         component={Tabs}
         options={{headerShown: false}}
       />
-      <Stack.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{title: 'Search'}}
-      />
+      <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}

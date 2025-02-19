@@ -43,13 +43,13 @@ export const IconButton: React.FC<IconButtonProps> = ({
       ) : (
         <>
           {iconPosition === 'left' && (
-            <Icon size={20} color="#fff" style={css.leftIcon} />
+            <Icon size={20} color="#515151" style={css.leftIcon} />
           )}
 
           {text && <Text style={[css.text, textStyle]}>{text}</Text>}
 
           {iconPosition === 'right' && (
-            <Icon size={20} color="#fff" style={css.rightIcon} />
+            <Icon size={20} color="#515151" style={css.rightIcon} />
           )}
         </>
       )}
@@ -69,11 +69,11 @@ const styles = ({
       justifyContent: 'center',
       padding: size2X,
       borderRadius: baseSize,
-      backgroundColor: disabled ? '#ccc' : '#007AFF',
+      backgroundColor: disabled ? '#ccc' : '#f4f4f4',
       opacity: loading ? 0.7 : 1,
     },
 
     rightIcon: {marginLeft: text ? 8 : 0},
     leftIcon: {marginRight: text ? 8 : 0},
-    text: {color: '#fff', fontSize: 16},
+    text: {color: '#515151', fontSize: 16},
   });
