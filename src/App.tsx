@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {SafeAreaView, Text, useColorScheme} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {
@@ -11,7 +11,7 @@ import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {Home, Search, User} from 'lucide-react-native';
+import {Home, Search, Settings, User} from 'lucide-react-native';
 import {ProfileScreen} from './screens/Profile';
 import {IconButton} from './components/IconButton';
 import {SettingsScreen} from './screens/Settings';
@@ -30,7 +30,6 @@ const profileIcon = ({color, size}: IconProps) => (
 );
 
 const HomeScreen = (): React.JSX.Element => {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -39,11 +38,6 @@ const HomeScreen = (): React.JSX.Element => {
   return (
     <SafeAreaView style={backgroundStyle}>
       <Text>HomeScreen</Text>
-      <IconButton
-        Icon={Search}
-        onPress={() => navigation.navigate('Search')}
-        text="Open search"
-      />
     </SafeAreaView>
   );
 };
@@ -54,17 +48,36 @@ const SearchScreen = (): React.JSX.Element => <Text>SearchScreen</Text>;
 const Tab = createBottomTabNavigator();
 
 function Tabs() {
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+
+  const headerSettings = useCallback(
+    () => (
+      <IconButton
+        Icon={Settings}
+        onPress={() => navigation.navigate('Settings')}
+      />
+    ),
+    [navigation],
+  );
+
+  const headerSearch = useCallback(
+    () => (
+      <IconButton Icon={Search} onPress={() => navigation.navigate('Search')} />
+    ),
+    [navigation],
+  );
+
   return (
     <Tab.Navigator screenOptions={{headerBackButtonDisplayMode: 'minimal'}}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{tabBarIcon: homeIcon}}
+        options={{tabBarIcon: homeIcon, headerRight: headerSearch}}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={{tabBarIcon: profileIcon}}
+        options={{tabBarIcon: profileIcon, headerRight: headerSettings}}
       />
     </Tab.Navigator>
   );
