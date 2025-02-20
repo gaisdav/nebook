@@ -20,7 +20,6 @@ const profileIcon = ({color, size}: IconProps) => (
   <User color={color} size={size} />
 );
 
-// Создаем нижнюю навигацию (табы)
 const Tab = createBottomTabNavigator();
 
 export function Tabs() {

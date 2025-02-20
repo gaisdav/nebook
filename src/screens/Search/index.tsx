@@ -4,7 +4,7 @@ import {IconButton} from '../../components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {size10X} from '../../commonStyles.ts';
+import {borderRadius, size10X, size2X} from '../../commonStyles.ts';
 
 export const SearchScreen = (): React.JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -51,9 +51,9 @@ export const SearchScreen = (): React.JSX.Element => {
 const styles = StyleSheet.create({
   searchInput: {
     backgroundColor: '#f0f0f0',
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    width: '100%',
+    paddingHorizontal: size2X,
+    borderRadius,
+    width: '90%',
     height: size10X,
   },
 });
