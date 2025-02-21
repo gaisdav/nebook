@@ -1,22 +1,57 @@
 import React, {useCallback, useLayoutEffect} from 'react';
-import {StyleSheet, Text, TextInput} from 'react-native';
+import {FlatList, StyleSheet, Text, TextInput} from 'react-native';
 import {IconButton} from '../../components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {borderRadius, size10X, size2X} from '../../commonStyles.ts';
+import {radius, size} from '../../commonStyles.ts';
+import {Card} from '../../components/Card';
+import {ScreenWrapper} from '../../components/ScreenWrapper';
+
+type ListItem = {
+  id: string;
+  content: string;
+};
+
+const data: ListItem[] = [
+  {
+    id: '1',
+    content: 'asdfasdf',
+  },
+  {
+    id: '2',
+    content: 'asdfasdf',
+  },
+  {
+    id: '3',
+    content: 'asdfasdf',
+  },
+  {
+    id: '12',
+    content: 'asdfasdf',
+  },
+  {
+    id: '22',
+    content: 'asdfasdf',
+  },
+  {
+    id: '32',
+    content: 'asdfasdf',
+  },
+];
 
 export const SearchScreen = (): React.JSX.Element => {
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
-  const [inputValue, setInputValue] = React.useState('');
+
+  const inputRef = React.useRef<string>('');
 
   const submit = useCallback(() => {
-    if (!inputValue) {
+    if (!inputRef.current) {
       return;
     }
 
-    console.log('submit', inputValue);
-  }, [inputValue]);
+    console.log('submit', inputRef.current);
+  }, []);
 
   const searchSubmitButton = useCallback(
     () => <IconButton Icon={Search} onPress={submit} />,
@@ -26,16 +61,18 @@ export const SearchScreen = (): React.JSX.Element => {
   const headerTitle = useCallback(
     () => (
       <TextInput
+        selectTextOnFocus
         autoFocus={true}
-        value={inputValue}
         style={styles.searchInput}
         placeholder="Search"
         returnKeyType="search"
-        onChangeText={setInputValue}
+        onChangeText={text => {
+          inputRef.current = text;
+        }}
         onSubmitEditing={submit}
       />
     ),
-    [inputValue, submit],
+    [submit],
   );
 
   useLayoutEffect(() => {
@@ -45,15 +82,38 @@ export const SearchScreen = (): React.JSX.Element => {
     });
   }, [headerTitle, navigation, searchSubmitButton]);
 
-  return <Text>SearchScreen</Text>;
+  return (
+    <ScreenWrapper padding={0}>
+      <FlatList<ListItem>
+        contentContainerStyle={styles.container}
+        fadingEdgeLength={size.base10X}
+        data={data}
+        renderItem={({item}) => (
+          <Card>
+            <Text> {item.content}</Text>
+            <Text> asdfasdf</Text>
+            <Text> asdfasdf</Text>
+            <Text> asdfasdf</Text>
+            <Text> asdfasdf</Text>
+            <Text> asdfasdf</Text>
+            <Text> asdfasdf</Text>
+          </Card>
+        )}
+      />
+    </ScreenWrapper>
+  );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    rowGap: size.base3X,
+    padding: size.base4X,
+  },
   searchInput: {
     backgroundColor: '#f0f0f0',
-    paddingHorizontal: size2X,
-    borderRadius,
+    paddingHorizontal: size.base2X,
+    borderRadius: radius.base,
     width: '90%',
-    height: size10X,
+    height: size.base10X,
   },
 });
