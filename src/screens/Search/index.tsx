@@ -85,6 +85,7 @@ export const SearchScreen = (): React.JSX.Element => {
   return (
     <ScreenWrapper padding={0}>
       <FlatList<ListItem>
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
         fadingEdgeLength={size.base10X}
         data={data}
