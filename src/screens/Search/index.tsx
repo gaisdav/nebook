@@ -49,8 +49,6 @@ export const SearchScreen = (): React.JSX.Element => {
     if (!inputRef.current) {
       return;
     }
-
-    console.log('submit', inputRef.current);
   }, []);
 
   const searchSubmitButton = useCallback(

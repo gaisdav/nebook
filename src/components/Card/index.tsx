@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, ViewStyle, StyleSheet} from 'react-native';
-import {theme} from '../../commonStyles.ts';
+import {theme} from '@/commonStyles.ts';
 
 interface CardProps {
   children?: React.ReactNode;
@@ -8,7 +8,6 @@ interface CardProps {
 }
 
 export const Card: React.FC<CardProps> = ({children, style}) => {
-  console.log('Card');
   return <View style={[styles.card, style]}>{children}</View>;
 };
 
