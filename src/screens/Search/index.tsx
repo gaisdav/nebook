@@ -1,12 +1,12 @@
 import React, {useCallback, useLayoutEffect} from 'react';
 import {FlatList, StyleSheet, Text, TextInput} from 'react-native';
-import {IconButton} from '../../components/IconButton';
+import {IconButton} from '@/components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {radius, size} from '../../commonStyles.ts';
-import {Card} from '../../components/Card';
-import {ScreenWrapper} from '../../components/ScreenWrapper';
+import {radius, size} from '@/commonStyles.ts';
+import {Card} from '@/components/Card';
+import {ScreenWrapper} from '@/components/ScreenWrapper';
 
 type ListItem = {
   id: string;
@@ -87,7 +87,7 @@ export const SearchScreen = (): React.JSX.Element => {
       <FlatList<ListItem>
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.container}
-        fadingEdgeLength={size.base10X}
+        fadingEdgeLength={size.base20X}
         data={data}
         renderItem={({item}) => (
           <Card>

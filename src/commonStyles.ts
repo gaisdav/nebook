@@ -7,6 +7,7 @@ export const size = {
   base4X: baseSize * 4,
   base5X: baseSize * 5,
   base10X: baseSize * 10,
+  base20X: baseSize * 20,
 };
 
 export const radius = {
