@@ -1,4 +1,5 @@
 import React from 'react';
+import Toast from 'react-native-toast-message';
 import {NavigationContainer} from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
 import {StatusBar} from 'react-native';
@@ -15,6 +16,11 @@ function App(): React.JSX.Element {
         // hidden={hidden}
       />
       <Navigation />
+      <Toast
+        config={{
+          swipeable: () => true,
+        }}
+      />
     </NavigationContainer>
   );
 }

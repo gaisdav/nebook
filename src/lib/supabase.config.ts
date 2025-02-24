@@ -1,3 +1,5 @@
+import 'react-native-url-polyfill/auto';
+
 import {createClient} from '@supabase/supabase-js';
 import {Database} from '@/database.types.ts';
 import {BOOK_SUPABASE_URL, BOOK_SUPABASE_ANON_KEY} from '@env';

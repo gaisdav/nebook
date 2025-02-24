@@ -7,6 +7,8 @@ export const size = {
   base4X: baseSize * 4,
   base5X: baseSize * 5,
   base10X: baseSize * 10,
+  base12X: baseSize * 12,
+  base15X: baseSize * 15,
   base20X: baseSize * 20,
 };
 

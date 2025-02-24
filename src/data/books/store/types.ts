@@ -1,4 +1,4 @@
-import { IBook } from '@/data/books/enitites/book/types.ts';
+import {IBook} from '@/data/books/enitites/book/types.ts';
 import {
   TChangeStatus,
   TUserIdBookId,
@@ -48,7 +48,7 @@ export type TGoogleBook = {
 
 export interface IBookList {
   totalItems: number;
-  items: IBook[];
+  items: Map<string, IBook>;
   limit: number;
   page: number;
 }
@@ -82,7 +82,6 @@ export interface BooksActions {
   resetList: () => void;
   resetAll: () => void;
   fetchPaginatedList: (params: TGoogleBookSearchParams) => void;
-  fetchFirstList: (params: TGoogleBookSearchParams) => void;
   fetchBook: (params: TUserIdBookId) => void;
   fetchBooksByStatuses: (params: TUserIdStatuses) => void;
 

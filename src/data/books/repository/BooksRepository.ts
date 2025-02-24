@@ -1,19 +1,19 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/database.types.ts';
-import { cache } from '@/lib/cache/CacheService.ts';
+import {SupabaseClient} from '@supabase/supabase-js';
+import {Database} from '@/database.types.ts';
+import {cache} from '@/lib/cache/CacheService.ts';
 import {
   TUserIdBookId,
   TChangeStatus,
   TGoogleBookSearchParams,
   TUserIdStatuses,
 } from '@/data/books/services/types.ts';
-import { TBooksRepository } from '@/data/books/repository/types.ts';
+import {TBooksRepository} from '@/data/books/repository/types.ts';
 import {
   constructGoogleBooksUrl,
   constructGoogleBookUrl,
 } from '@/data/books/services/utils.ts';
-import { TGoogleBook, TGoogleBookSearch } from '@/data/books/store/types.ts';
-import { cacheKeys } from '@/lib/cache/constants';
+import {TGoogleBook, TGoogleBookSearch} from '@/data/books/store/types.ts';
+import {cacheKeys} from '@/lib/cache/constants';
 
 export class BooksRepository implements TBooksRepository {
   constructor(private repository: SupabaseClient<Database>) {}
@@ -30,7 +30,7 @@ export class BooksRepository implements TBooksRepository {
     const result = await fetch(url);
     const book = await result.json();
 
-    await cache.set('books', cacheKey, book, { ttl: 1000 * 60 * 60 * 24 });
+    await cache.set('books', cacheKey, book, {ttl: 1000 * 60 * 60 * 24});
 
     return book;
   }
@@ -38,9 +38,13 @@ export class BooksRepository implements TBooksRepository {
   async fetchBooks(
     params: TGoogleBookSearchParams,
   ): Promise<TGoogleBookSearch> {
-    const { query = '', limit = 10, page = 1 } = params;
+    const {query = '', limit = 10, page = 1} = params;
     const url = constructGoogleBooksUrl(query, limit, page);
     const result = await fetch(url.toString());
+    if (!result.ok) {
+      const error = await result.text();
+      throw new Error(error);
+    }
     return await result.json();
   }
 
@@ -52,7 +56,7 @@ export class BooksRepository implements TBooksRepository {
       return cachedBooks;
     }
 
-    const { data, error } = await this.repository
+    const {data, error} = await this.repository
       .from('user_books')
       .select('book_provider_id')
       .in('status_id', params.statuses)
@@ -62,7 +66,7 @@ export class BooksRepository implements TBooksRepository {
       throw new Error(error.message);
     }
 
-    const bookIds = data.map((book) => book.book_provider_id);
+    const bookIds = data.map(book => book.book_provider_id);
 
     await cache.set('booksStatuses', cacheKey, bookIds, {
       ttl: 1000 * 60 * 60 * 24,
@@ -104,7 +108,7 @@ export class BooksRepository implements TBooksRepository {
       return cachedBook;
     }
 
-    const { data, error } = await this.repository
+    const {data, error} = await this.repository
       .from('favorite_books')
       .select('id, user_id, book_provider_id')
       .eq('user_id', userId)
@@ -133,7 +137,7 @@ export class BooksRepository implements TBooksRepository {
       return cachedBooks;
     }
 
-    const { data, error } = await this.repository
+    const {data, error} = await this.repository
       .from(dbKey)
       .select('book_provider_id')
       .eq('user_id', userId);
@@ -142,7 +146,7 @@ export class BooksRepository implements TBooksRepository {
       throw new Error(error.message);
     }
 
-    const bookIds = data.map((book) => book.book_provider_id);
+    const bookIds = data.map(book => book.book_provider_id);
 
     await cache.set('favoriteBooks', cacheKey, bookIds, {
       ttl: 1000 * 60 * 60 * 24,
@@ -154,13 +158,13 @@ export class BooksRepository implements TBooksRepository {
   async changeBookStatus(params: TChangeStatus): Promise<void> {
     await cache.clear('booksStatuses');
 
-    const { error } = await this.repository.from('user_books').upsert(
+    const {error} = await this.repository.from('user_books').upsert(
       {
         user_id: params.userId,
         book_provider_id: params.bookId,
         status_id: params.status,
       },
-      { onConflict: 'user_id, book_provider_id' }, // Ключи для проверки на дубликаты
+      {onConflict: 'user_id, book_provider_id'}, // Ключи для проверки на дубликаты
     );
 
     if (error) {
@@ -179,7 +183,7 @@ export class BooksRepository implements TBooksRepository {
       return cachedStatus;
     }
 
-    const { data, error } = await this.repository
+    const {data, error} = await this.repository
       .from('user_books')
       .select('status_id')
       .eq('user_id', params.userId)
@@ -202,7 +206,7 @@ export class BooksRepository implements TBooksRepository {
   async resetBookStatus(params: TUserIdBookId): Promise<void> {
     await cache.clear('booksStatuses');
 
-    const { error } = await this.repository
+    const {error} = await this.repository
       .from('user_books')
       .delete()
       .eq('user_id', params.userId)

@@ -1,46 +1,29 @@
 import React, {useCallback, useLayoutEffect} from 'react';
-import {FlatList, StyleSheet, Text, TextInput} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Keyboard,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import {IconButton} from '@/components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {radius, size} from '@/commonStyles.ts';
+import {radius, size, theme} from '@/commonStyles.ts';
 import {Card} from '@/components/Card';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
-
-type ListItem = {
-  id: string;
-  content: string;
-};
-
-const data: ListItem[] = [
-  {
-    id: '1',
-    content: 'asdfasdf',
-  },
-  {
-    id: '2',
-    content: 'asdfasdf',
-  },
-  {
-    id: '3',
-    content: 'asdfasdf',
-  },
-  {
-    id: '12',
-    content: 'asdfasdf',
-  },
-  {
-    id: '22',
-    content: 'asdfasdf',
-  },
-  {
-    id: '32',
-    content: 'asdfasdf',
-  },
-];
+import {useBookStore} from '@/data/books/store/useBookStore.tsx';
+import {IBook} from '@/data/books/enitites/book/types.ts';
+import {Skeleton} from '@/components/Skeleton';
 
 export const SearchScreen = (): React.JSX.Element => {
+  const list = useBookStore(state => state.list);
+  const loading = useBookStore(state => state.listLoading);
+  const fetchList = useBookStore(state => state.fetchPaginatedList);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   const inputRef = React.useRef<string>('');
@@ -49,18 +32,24 @@ export const SearchScreen = (): React.JSX.Element => {
     if (!inputRef.current) {
       return;
     }
-  }, []);
+
+    Keyboard.dismiss();
+    fetchList({query: inputRef.current});
+  }, [fetchList]);
 
   const searchSubmitButton = useCallback(
     () => <IconButton Icon={Search} onPress={submit} />,
     [submit],
   );
 
+  const hasMore = list?.totalItems && list.totalItems > list.items.size;
+
   const headerTitle = useCallback(
     () => (
       <TextInput
         selectTextOnFocus
         autoFocus={true}
+        submitBehavior="blurAndSubmit"
         style={styles.searchInput}
         placeholder="Search"
         returnKeyType="search"
@@ -82,23 +71,42 @@ export const SearchScreen = (): React.JSX.Element => {
 
   return (
     <ScreenWrapper padding={0}>
-      <FlatList<ListItem>
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.container}
-        fadingEdgeLength={size.base20X}
-        data={data}
-        renderItem={({item}) => (
-          <Card>
-            <Text> {item.content}</Text>
-            <Text> asdfasdf</Text>
-            <Text> asdfasdf</Text>
-            <Text> asdfasdf</Text>
-            <Text> asdfasdf</Text>
-            <Text> asdfasdf</Text>
-            <Text> asdfasdf</Text>
-          </Card>
-        )}
-      />
+      {loading ? (
+        <View style={styles.loadingWrapper}>
+          <Skeleton height={120} />
+          <Skeleton height={120} />
+          <Skeleton height={120} />
+          <Skeleton height={120} />
+        </View>
+      ) : !list ? (
+        <Text>Type something to search</Text>
+      ) : (
+        <FlatList<IBook>
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.container}
+          fadingEdgeLength={size.base20X}
+          data={Array.from(list.items.values())}
+          ListFooterComponent={hasMore ? ActivityIndicator : null}
+          renderItem={({item}) => (
+            <Card>
+              {item.cover && (
+                <Image
+                  style={styles.cover}
+                  source={{
+                    uri: item.cover,
+                  }}
+                />
+              )}
+              {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
+              {item.description && (
+                <Text numberOfLines={4} ellipsizeMode="tail">
+                  {item.description}
+                </Text>
+              )}
+            </Card>
+          )}
+        />
+      )}
     </ScreenWrapper>
   );
 };
@@ -106,6 +114,17 @@ export const SearchScreen = (): React.JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     rowGap: size.base3X,
+    padding: size.base4X,
+  },
+  cover: {
+    width: size.base15X,
+    height: size.base20X,
+    borderRadius: radius.base,
+    ...theme.light.shadow.base,
+  },
+  loadingWrapper: {
+    height: '100%',
+    gap: size.base3X,
     padding: size.base4X,
   },
   searchInput: {

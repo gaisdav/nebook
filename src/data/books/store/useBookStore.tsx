@@ -1,9 +1,11 @@
-import {create} from 'zustand/index';
+import {create} from 'zustand';
 import {BooksService} from '@/data/books/services/BooksService.ts';
 import {BooksActions, BooksState} from '@/data/books/store/types.ts';
 import {supabase} from '@/lib/supabase.config.ts';
 import {BooksRepository} from '@/data/books/repository/BooksRepository.ts';
 import {getErrorMessage} from '@/lib/utils.ts';
+import Toast from 'react-native-toast-message';
+import {IBook} from '@/data/books/enitites/book/types.ts';
 
 const initialState: BooksState = {
   bookLoading: false,
@@ -28,39 +30,41 @@ export const useBookStore = create<BooksState & BooksActions>((set, get) => ({
   resetList: () => set({list: null}),
   resetAll: () => set(initialState),
 
-  fetchFirstList: async params => {
-    set(() => ({listLoading: true}));
-    try {
-      const books = await bookService.searchBooks(params);
-      set({list: books});
-    } catch (error) {
-      set({errors: {...get().errors, listError: getErrorMessage(error)}});
-      throw error;
-    } finally {
-      set({listLoading: false});
-    }
-  },
-
   fetchPaginatedList: async params => {
     set(() => ({listLoading: true}));
+    const {page = 1} = params;
+
     try {
       const books = await bookService.searchBooks(params);
-      set(({list}) => ({
-        list: {
-          ...books,
-          items: list?.items
-            ? [
-                ...list.items,
-                ...(books.items || []).filter(
-                  item =>
-                    !list.items?.some(prevItem => prevItem.id === item.id),
-                ),
-              ]
-            : books.items,
-        },
-      }));
+
+      set(({list}) => {
+        const booksItems = books.items || [];
+        const listItems = list?.items || new Map<string, IBook>();
+        const items =
+          page === 1
+            ? booksItems
+            : new Map<string, IBook>(
+                [...listItems.values(), ...booksItems.values()].map(book => [
+                  book.id,
+                  book,
+                ]),
+              );
+
+        return {
+          list: {
+            ...books,
+            items,
+          },
+        };
+      });
     } catch (error) {
-      set({errors: {...get().errors, listError: getErrorMessage(error)}});
+      const errorMessage = getErrorMessage(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to search books',
+        text2: errorMessage,
+      });
+      set({errors: {...get().errors, listError: errorMessage}});
       throw error;
     } finally {
       set({listLoading: false});
