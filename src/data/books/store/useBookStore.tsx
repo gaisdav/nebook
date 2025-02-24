@@ -10,6 +10,7 @@ import {IBook} from '@/data/books/enitites/book/types.ts';
 const initialState: BooksState = {
   bookLoading: false,
   listLoading: false,
+  paginating: false,
   collectionLoading: false,
   favoriteLoading: false,
   statusLoading: false,
@@ -31,8 +32,8 @@ export const useBookStore = create<BooksState & BooksActions>((set, get) => ({
   resetAll: () => set(initialState),
 
   fetchPaginatedList: async params => {
-    set(() => ({listLoading: true}));
-    const {page = 1} = params;
+    const page = params.page || 1;
+    set(() => (page === 1 ? {listLoading: true} : {paginating: true}));
 
     try {
       const books = await bookService.searchBooks(params);
@@ -67,7 +68,7 @@ export const useBookStore = create<BooksState & BooksActions>((set, get) => ({
       set({errors: {...get().errors, listError: errorMessage}});
       throw error;
     } finally {
-      set({listLoading: false});
+      set({listLoading: false, paginating: false});
     }
   },
 

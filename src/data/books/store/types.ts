@@ -66,6 +66,7 @@ export interface BooksStateErrors {
 
 export interface BooksState {
   listLoading: boolean;
+  paginating: boolean;
   bookLoading: boolean;
   collectionLoading: boolean;
   favoriteLoading: boolean;

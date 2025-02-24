@@ -22,24 +22,31 @@ import {Skeleton} from '@/components/Skeleton';
 
 export const SearchScreen = (): React.JSX.Element => {
   const list = useBookStore(state => state.list);
-  const loading = useBookStore(state => state.listLoading);
+  const listLoading = useBookStore(state => state.listLoading);
   const fetchList = useBookStore(state => state.fetchPaginatedList);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
   const inputRef = React.useRef<string>('');
 
-  const submit = useCallback(() => {
-    if (!inputRef.current) {
-      return;
-    }
+  const submit = useCallback(
+    (page = 1) => {
+      if (!inputRef.current) {
+        return;
+      }
 
-    Keyboard.dismiss();
-    fetchList({query: inputRef.current});
-  }, [fetchList]);
+      Keyboard.dismiss();
+      fetchList({query: inputRef.current, page});
+    },
+    [fetchList],
+  );
+
+  const handleSubmit = useCallback(() => {
+    submit();
+  }, [submit]);
 
   const searchSubmitButton = useCallback(
-    () => <IconButton Icon={Search} onPress={submit} />,
-    [submit],
+    () => <IconButton Icon={Search} onPress={handleSubmit} />,
+    [handleSubmit],
   );
 
   const hasMore = list?.totalItems && list.totalItems > list.items.size;
@@ -56,10 +63,10 @@ export const SearchScreen = (): React.JSX.Element => {
         onChangeText={text => {
           inputRef.current = text;
         }}
-        onSubmitEditing={submit}
+        onSubmitEditing={handleSubmit}
       />
     ),
-    [submit],
+    [handleSubmit],
   );
 
   useLayoutEffect(() => {
@@ -69,9 +76,15 @@ export const SearchScreen = (): React.JSX.Element => {
     });
   }, [headerTitle, navigation, searchSubmitButton]);
 
+  const handleEndReached = () => {
+    if (hasMore) {
+      submit(list.page + 1);
+    }
+  };
+
   return (
     <ScreenWrapper padding={0}>
-      {loading ? (
+      {listLoading ? (
         <View style={styles.loadingWrapper}>
           <Skeleton height={120} />
           <Skeleton height={120} />
@@ -85,6 +98,7 @@ export const SearchScreen = (): React.JSX.Element => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.container}
           fadingEdgeLength={size.base20X}
+          onEndReached={handleEndReached}
           data={Array.from(list.items.values())}
           ListFooterComponent={hasMore ? ActivityIndicator : null}
           renderItem={({item}) => (
@@ -120,6 +134,7 @@ const styles = StyleSheet.create({
     width: size.base15X,
     height: size.base20X,
     borderRadius: radius.base,
+    resizeMode: 'contain',
     ...theme.light.shadow.base,
   },
   loadingWrapper: {
