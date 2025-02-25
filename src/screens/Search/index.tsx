@@ -49,8 +49,6 @@ export const SearchScreen = (): React.JSX.Element => {
     [handleSubmit],
   );
 
-  const hasMore = list?.totalItems && list.totalItems > list.items.size;
-
   const headerTitle = useCallback(
     () => (
       <TextInput
@@ -76,8 +74,12 @@ export const SearchScreen = (): React.JSX.Element => {
     });
   }, [headerTitle, navigation, searchSubmitButton]);
 
+  const hasMore = Boolean(
+    inputRef.current && list?.totalItems && list.totalItems > list.items.size,
+  );
+
   const handleEndReached = () => {
-    if (hasMore) {
+    if (hasMore && list) {
       submit(list.page + 1);
     }
   };
@@ -101,24 +103,28 @@ export const SearchScreen = (): React.JSX.Element => {
           onEndReached={handleEndReached}
           data={Array.from(list.items.values())}
           ListFooterComponent={hasMore ? ActivityIndicator : null}
-          renderItem={({item}) => (
-            <Card>
-              {item.cover && (
-                <Image
-                  style={styles.cover}
-                  source={{
-                    uri: item.cover,
-                  }}
-                />
-              )}
-              {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
-              {item.description && (
-                <Text numberOfLines={4} ellipsizeMode="tail">
-                  {item.description}
-                </Text>
-              )}
-            </Card>
-          )}
+          renderItem={({item}) => {
+            const coverUri = item.cover?.replace('http://', 'https://');
+
+            return (
+              <Card>
+                {item.cover && (
+                  <Image
+                    style={styles.cover}
+                    source={{
+                      uri: coverUri,
+                    }}
+                  />
+                )}
+                {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
+                {item.description && (
+                  <Text numberOfLines={4} ellipsizeMode="tail">
+                    {item.description}
+                  </Text>
+                )}
+              </Card>
+            );
+          }}
         />
       )}
     </ScreenWrapper>
