@@ -13,7 +13,7 @@ import {IconButton} from '@/components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {radius, size, theme} from '@/commonStyles.ts';
+import {radius, size} from '@/commonStyles.ts';
 import {Card} from '@/components/Card';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
