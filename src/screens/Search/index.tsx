@@ -141,7 +141,6 @@ const styles = StyleSheet.create({
     height: size.base20X,
     borderRadius: radius.base,
     resizeMode: 'contain',
-    ...theme.light.shadow.base,
   },
   loadingWrapper: {
     height: '100%',
