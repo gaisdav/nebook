@@ -103,28 +103,24 @@ export const SearchScreen = (): React.JSX.Element => {
           onEndReached={handleEndReached}
           data={Array.from(list.items.values())}
           ListFooterComponent={hasMore ? ActivityIndicator : null}
-          renderItem={({item}) => {
-            const coverUri = item.cover?.replace('http://', 'https://');
-
-            return (
-              <Card>
-                {item.cover && (
-                  <Image
-                    style={styles.cover}
-                    source={{
-                      uri: coverUri,
-                    }}
-                  />
-                )}
-                {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
-                {item.description && (
-                  <Text numberOfLines={4} ellipsizeMode="tail">
-                    {item.description}
-                  </Text>
-                )}
-              </Card>
-            );
-          }}
+          renderItem={({item}) => (
+            <Card>
+              {item.cover && (
+                <Image
+                  style={styles.cover}
+                  source={{
+                    uri: item.cover,
+                  }}
+                />
+              )}
+              {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
+              {item.description && (
+                <Text numberOfLines={4} ellipsizeMode="tail">
+                  {item.description}
+                </Text>
+              )}
+            </Card>
+          )}
         />
       )}
     </ScreenWrapper>

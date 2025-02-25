@@ -27,7 +27,10 @@ export class GoogleBookItems implements IBookList {
           subtitle: book.volumeInfo.subtitle,
           authors: book.volumeInfo.authors,
           categories: book.volumeInfo.categories,
-          cover: book.volumeInfo.imageLinks?.thumbnail,
+          cover: book.volumeInfo.imageLinks?.thumbnail?.replace(
+            'http://',
+            'https://',
+          ),
           description: book.volumeInfo.description,
           language: book.volumeInfo.language,
           pageCount: book.volumeInfo.pageCount,
