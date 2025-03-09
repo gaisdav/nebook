@@ -1,16 +1,11 @@
 import React from 'react';
-import {SafeAreaView, Text, useColorScheme} from 'react-native';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {Text} from 'react-native';
+import {ScreenWrapper} from '@/components/ScreenWrapper';
 
 export const HomeScreen = (): React.JSX.Element => {
-  const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <ScreenWrapper>
       <Text>HomeScreen</Text>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };

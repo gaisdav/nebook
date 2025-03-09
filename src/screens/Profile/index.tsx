@@ -1,10 +1,11 @@
 import React from 'react';
-import {SafeAreaView, Text} from 'react-native';
+import {Text} from 'react-native';
+import {ScreenWrapper} from '@/components/ScreenWrapper';
 
 export const ProfileScreen = () => {
   return (
-    <SafeAreaView>
+    <ScreenWrapper>
       <Text>ProfileScreen</Text>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };

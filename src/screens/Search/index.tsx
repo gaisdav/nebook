@@ -104,7 +104,8 @@ export const SearchScreen = (): React.JSX.Element => {
           data={Array.from(list.items.values())}
           ListFooterComponent={hasMore ? ActivityIndicator : null}
           renderItem={({item}) => (
-            <Card>
+            <Card
+              onPress={() => navigation.navigate('Book', {bookId: item.id})}>
               {item.cover && (
                 <Image
                   style={styles.cover}

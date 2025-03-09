@@ -75,6 +75,12 @@ export const useBookStore = create<BooksState & BooksActions>((set, get) => ({
   fetchBook: async params => {
     set(() => ({bookLoading: true}));
     try {
+      const bookFromList = get().list?.items.get(params.bookId);
+
+      if (bookFromList) {
+        set({book: bookFromList});
+      }
+
       const book = await bookService.fetchBookById(params);
       set({book});
     } catch (error) {

@@ -1,14 +1,21 @@
 import React from 'react';
-import {View, ViewStyle, StyleSheet} from 'react-native';
+import {View, ViewStyle, StyleSheet, Pressable} from 'react-native';
 import {theme} from '@/commonStyles.ts';
 
 interface CardProps {
   children?: React.ReactNode;
   style?: ViewStyle;
+  onPress?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({children, style}) => {
-  return <View style={[styles.card, style]}>{children}</View>;
+export const Card: React.FC<CardProps> = ({children, style, onPress}) => {
+  const Wrapper = children ? Pressable : React.Fragment;
+
+  return (
+    <Wrapper onPress={onPress}>
+      <View style={[styles.card, style]}>{children}</View>
+    </Wrapper>
+  );
 };
 
 const styles = StyleSheet.create({

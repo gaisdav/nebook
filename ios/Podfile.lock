@@ -1210,6 +1210,27 @@ PODS:
     - React-jsiexecutor
     - React-RCTFBReactNativeSpec
     - ReactCommon/turbomodule/core
+  - react-native-mmkv (3.2.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-safe-area-context (5.2.0):
     - DoubleConversion
     - glog
@@ -1695,6 +1716,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -1807,6 +1829,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-mmkv:
+    :path: "../node_modules/react-native-mmkv"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   React-nativeconfig:
@@ -1911,6 +1935,7 @@ SPEC CHECKSUMS:
   React-logger: e7eeebaed32b88dcc29b10901aa8c5822dc397c4
   React-Mapbuffer: 73dd1210c4ecf0dfb4e2d4e06f2a13f824a801a9
   React-microtasksnativemodule: d03753688e2abf135edcd4160ab3ce7526da8b0d
+  react-native-mmkv: 24917f0685641ccfd37c9b7004b26c00551128be
   react-native-safe-area-context: 7e513d737b0b5c1d10bbe0e5fcc9f925a7be144c
   React-nativeconfig: cb207ebba7cafce30657c7ad9f1587a8f32e4564
   React-NativeModulesApple: 8411d548b1ad9d2b3e597beb9348e715c8020e0c
@@ -1948,4 +1973,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 505f6516ce6fe88f153448c65eaa090bd87c478a
 
-COCOAPODS: 1.16.2
+COCOAPODS: 1.15.2
