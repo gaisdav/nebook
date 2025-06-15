@@ -5,6 +5,8 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {BookScreen} from '@/screens/Book';
 import {RootStackParamList} from '@/types.ts';
+import {LoginScreen} from './screens/Login';
+import {RegisterScreen} from './screens/Register';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -12,7 +14,17 @@ export function Navigation() {
   return (
     <Stack.Navigator
       screenOptions={{headerBackButtonDisplayMode: 'minimal'}}
-      initialRouteName="Tabs">
+      initialRouteName="Login">
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="Register"
+        component={RegisterScreen}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="Tabs"
         component={Tabs}
