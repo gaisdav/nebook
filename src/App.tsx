@@ -2,18 +2,20 @@ import React from 'react';
 import Toast from 'react-native-toast-message';
 import {NavigationContainer} from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
-import {StatusBar} from 'react-native';
-import {theme} from './commonStyles.ts';
+import {StatusBar, useColorScheme} from 'react-native';
+import {ThemeProvider} from './ThemeContext.tsx';
+import { useTheme } from './hooks/useTheme.tsx';
 
-function App(): React.JSX.Element {
+function AppContent(): React.JSX.Element {
+  const {colors, isDark} = useTheme();
+  const systemColorScheme = useColorScheme();
+
   return (
     <NavigationContainer>
       <StatusBar
         animated={true}
-        backgroundColor={theme.light.cardBg}
-        // barStyle={statusBarStyle}
-        // showHideTransition={statusBarTransition}
-        // hidden={hidden}
+        backgroundColor={colors.background}
+        barStyle={isDark ? 'light-content' : 'dark-content'}
       />
       <Navigation />
       <Toast
@@ -22,6 +24,14 @@ function App(): React.JSX.Element {
         }}
       />
     </NavigationContainer>
+  );
+}
+
+function App(): React.JSX.Element {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

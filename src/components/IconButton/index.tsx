@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {LucideIcon} from 'lucide-react-native';
-import {size} from '../../commonStyles.ts';
+import { borderRadius, spacing } from '@/lib/theme';
 
 interface IconButtonProps {
   Icon: LucideIcon;
@@ -67,8 +67,8 @@ const styles = ({
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: size.base2X,
-      borderRadius: size.base,
+      padding: spacing.sm,
+      borderRadius: borderRadius.md,
       backgroundColor: disabled ? '#ccc' : '#f4f4f4',
       opacity: loading ? 0.7 : 1,
     },

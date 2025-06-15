@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Easing, DimensionValue} from 'react-native';
-import {radius, size} from '@/commonStyles.ts';
+import {borderRadius as borderRadiusTheme} from '@/lib/theme';
 
 interface SkeletonProps {
   width?: DimensionValue;
@@ -11,8 +11,8 @@ interface SkeletonProps {
 
 export const Skeleton: React.FC<SkeletonProps> = ({
   width = '100%',
-  height = size.base10X,
-  borderRadius = radius.base,
+  height = 40,
+  borderRadius = borderRadiusTheme.md,
   variant = 'rect',
 }) => {
   const shimmerAnim = React.useRef(new Animated.Value(0)).current;

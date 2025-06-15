@@ -1,10 +1,13 @@
 import React, {useEffect} from 'react';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
-import {Image, StyleSheet, Text} from 'react-native';
+import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '@/types.ts';
-import {radius, size} from '@/commonStyles.ts';
+import { useTheme } from '@/hooks/useTheme';
+import {spacing, borderRadius} from '@/lib/theme';
+
+const {width} = Dimensions.get('window');
 
 export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
@@ -13,6 +16,8 @@ export const BookScreen = (): React.JSX.Element => {
   const book = useBookStore(state => state.book);
   const loading = useBookStore(state => state.bookLoading);
   const fetchBook = useBookStore(state => state.fetchBook);
+
+  const {colors} = useTheme();
 
   useEffect(() => {
     if (!bookId) {
@@ -42,7 +47,7 @@ export const BookScreen = (): React.JSX.Element => {
   }
 
   return (
-    <ScreenWrapper>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       {book.cover && (
         <Image
           style={styles.cover}
@@ -52,15 +57,19 @@ export const BookScreen = (): React.JSX.Element => {
         />
       )}
       <Text>{book.title}</Text>
-    </ScreenWrapper>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: spacing.md,
+  },
   cover: {
-    width: size.base15X,
-    height: size.base20X,
-    borderRadius: radius.base,
+    width: width * 0.3,
+    height: width * 0.45,
+    borderRadius: borderRadius.md,
     resizeMode: 'contain',
   },
 });

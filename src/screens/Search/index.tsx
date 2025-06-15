@@ -8,23 +8,27 @@ import {
   Keyboard,
   Image,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {IconButton} from '@/components/IconButton';
 import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {radius, size} from '@/commonStyles.ts';
 import {Card} from '@/components/Card';
-import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {Skeleton} from '@/components/Skeleton';
+import { useTheme } from '@/hooks/useTheme';
+import {spacing, borderRadius, typography} from '@/lib/theme';
+
+const {width} = Dimensions.get('window');
 
 export const SearchScreen = (): React.JSX.Element => {
   const list = useBookStore(state => state.list);
   const listLoading = useBookStore(state => state.listLoading);
   const fetchList = useBookStore(state => state.fetchPaginatedList);
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const {colors} = useTheme();
 
   const inputRef = React.useRef<string>('');
 
@@ -45,7 +49,9 @@ export const SearchScreen = (): React.JSX.Element => {
   }, [submit]);
 
   const searchSubmitButton = useCallback(
-    () => <IconButton Icon={Search} onPress={handleSubmit} />,
+    () => (
+      <IconButton Icon={Search} onPress={handleSubmit} />
+    ),
     [handleSubmit],
   );
 
@@ -55,8 +61,15 @@ export const SearchScreen = (): React.JSX.Element => {
         selectTextOnFocus
         autoFocus={true}
         submitBehavior="blurAndSubmit"
-        style={styles.searchInput}
+        style={[
+          styles.searchInput,
+          {
+            backgroundColor: colors.backgroundSecondary,
+            color: colors.text,
+          },
+        ]}
         placeholder="Search"
+        placeholderTextColor={colors.textTertiary}
         returnKeyType="search"
         onChangeText={text => {
           inputRef.current = text;
@@ -64,7 +77,7 @@ export const SearchScreen = (): React.JSX.Element => {
         onSubmitEditing={handleSubmit}
       />
     ),
-    [handleSubmit],
+    [handleSubmit, colors],
   );
 
   useLayoutEffect(() => {
@@ -84,8 +97,39 @@ export const SearchScreen = (): React.JSX.Element => {
     }
   };
 
+  const renderItem = useCallback(
+    ({item}: {item: IBook}) => (
+      <View style={styles.cardContainer}>
+        <Card>
+          {item.cover && (
+            <Image
+              style={styles.cover}
+              source={{
+                uri: item.cover,
+              }}
+            />
+          )}
+          {item.title && (
+            <Text style={[styles.title, {color: colors.text}]} ellipsizeMode="tail">
+              {item.title}
+            </Text>
+          )}
+          {item.description && (
+            <Text
+              style={[styles.description, {color: colors.textSecondary}]}
+              numberOfLines={4}
+              ellipsizeMode="tail">
+              {item.description}
+            </Text>
+          )}
+        </Card>
+      </View>
+    ),
+    [colors],
+  );
+
   return (
-    <ScreenWrapper padding={0}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       {listLoading ? (
         <View style={styles.loadingWrapper}>
           <Skeleton height={120} />
@@ -94,61 +138,64 @@ export const SearchScreen = (): React.JSX.Element => {
           <Skeleton height={120} />
         </View>
       ) : !list ? (
-        <Text>Type something to search</Text>
+        <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
+          Type something to search
+        </Text>
       ) : (
         <FlatList<IBook>
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.container}
-          fadingEdgeLength={size.base20X}
+          contentContainerStyle={styles.listContainer}
           onEndReached={handleEndReached}
           data={Array.from(list.items.values())}
           ListFooterComponent={hasMore ? ActivityIndicator : null}
-          renderItem={({item}) => (
-            <Card
-              onPress={() => navigation.navigate('Book', {bookId: item.id})}>
-              {item.cover && (
-                <Image
-                  style={styles.cover}
-                  source={{
-                    uri: item.cover,
-                  }}
-                />
-              )}
-              {item.title && <Text ellipsizeMode="tail">{item.title}</Text>}
-              {item.description && (
-                <Text numberOfLines={4} ellipsizeMode="tail">
-                  {item.description}
-                </Text>
-              )}
-            </Card>
-          )}
+          renderItem={renderItem}
         />
       )}
-    </ScreenWrapper>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    rowGap: size.base3X,
-    padding: size.base4X,
+    flex: 1,
+  },
+  listContainer: {
+    padding: spacing.md,
+    gap: spacing.md,
+  },
+  cardContainer: {
+    marginBottom: spacing.md,
   },
   cover: {
-    width: size.base15X,
-    height: size.base20X,
-    borderRadius: radius.base,
+    width: width * 0.3,
+    height: width * 0.45,
+    borderRadius: borderRadius.md,
     resizeMode: 'contain',
+    marginBottom: spacing.sm,
   },
   loadingWrapper: {
-    height: '100%',
-    gap: size.base3X,
-    padding: size.base4X,
+    flex: 1,
+    gap: spacing.md,
+    padding: spacing.md,
   },
   searchInput: {
-    backgroundColor: '#f0f0f0',
-    paddingHorizontal: size.base2X,
-    borderRadius: radius.base,
+    paddingHorizontal: spacing.md,
+    borderRadius: borderRadius.md,
     width: '90%',
-    height: size.base10X,
+    height: 40,
+  },
+  title: {
+    fontSize: typography.fontSize.lg,
+    fontWeight: '600',
+    marginBottom: spacing.xs,
+  },
+  description: {
+    fontSize: typography.fontSize.sm,
+    lineHeight: typography.lineHeight.sm,
+  },
+  emptyText: {
+    fontSize: typography.fontSize.md,
+    textAlign: 'center',
+    marginTop: spacing.xl,
   },
 });

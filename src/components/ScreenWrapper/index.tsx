@@ -1,3 +1,5 @@
+import { spacing } from '@/lib/theme';
+import { useTheme } from '@/hooks/useTheme';
 import React from 'react';
 import {
   View,
@@ -6,7 +8,6 @@ import {
   SafeAreaView,
   ScrollView,
 } from 'react-native';
-import {theme, size} from '../../commonStyles.ts';
 
 interface ScreenWrapperProps {
   children: React.ReactNode;
@@ -19,10 +20,12 @@ export const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
   children,
   style,
   scrollable = false,
-  padding = size.base4X,
+  padding = spacing.md,
 }) => {
+  const {colors} = useTheme();
+
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.background}]}>
       {scrollable ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -40,8 +43,7 @@ export const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1,
-    backgroundColor: theme.light.mainBg,
+    flex: 1
   },
   scrollContainer: {
     flex: 1,

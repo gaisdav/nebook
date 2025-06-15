@@ -10,12 +10,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@/hooks/useTheme';
+import { spacing, typography, borderRadius } from '@/lib/theme';
 
 export const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   const handleRegister = () => {
     // TODO: Implement registration logic
@@ -27,21 +30,31 @@ export const RegisterScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up to get started</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Create Account</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+            Sign up to get started
+          </Text>
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Name</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Name</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    borderColor: colors.inputBorder,
+                    color: colors.text,
+                  },
+                ]}
                 placeholder="Enter your name"
+                placeholderTextColor={colors.inputPlaceholder}
                 value={name}
                 onChangeText={setName}
                 autoCapitalize="words"
@@ -50,10 +63,18 @@ export const RegisterScreen = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Email</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    borderColor: colors.inputBorder,
+                    color: colors.text,
+                  },
+                ]}
                 placeholder="Enter your email"
+                placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -63,10 +84,18 @@ export const RegisterScreen = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Password</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    borderColor: colors.inputBorder,
+                    color: colors.text,
+                  },
+                ]}
                 placeholder="Create a password"
+                placeholderTextColor={colors.inputPlaceholder}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -75,15 +104,20 @@ export const RegisterScreen = () => {
               />
             </View>
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-              <Text style={styles.registerButtonText}>Create Account</Text>
+            <TouchableOpacity
+              style={[styles.registerButton, { backgroundColor: colors.primary }]}
+              onPress={handleRegister}
+            >
+              <Text style={[styles.registerButtonText, { color: colors.textInverse }]}>
+                Create Account
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.loginButton}
               onPress={handleBackToLogin}
             >
-              <Text style={styles.loginButtonText}>
+              <Text style={[styles.loginButtonText, { color: colors.primary }]}>
                 Already have an account? Sign in
               </Text>
             </TouchableOpacity>
@@ -97,64 +131,55 @@ export const RegisterScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   keyboardAvoidingView: {
     flex: 1,
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: spacing.lg,
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: typography.fontSize.xxxl,
     fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    marginBottom: spacing.xs,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 32,
+    fontSize: typography.fontSize.md,
+    marginBottom: spacing.xl,
   },
   form: {
-    gap: 16,
+    gap: spacing.md,
   },
   inputContainer: {
-    gap: 8,
+    gap: spacing.xs,
   },
   label: {
-    fontSize: 14,
+    fontSize: typography.fontSize.sm,
     fontWeight: '600',
-    color: '#1a1a1a',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    fontSize: typography.fontSize.md,
   },
   registerButton: {
-    backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 8,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.xs,
   },
   registerButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    fontSize: typography.fontSize.md,
     fontWeight: '600',
   },
   loginButton: {
-    padding: 16,
+    padding: spacing.md,
     alignItems: 'center',
   },
   loginButtonText: {
-    color: '#007AFF',
-    fontSize: 16,
+    fontSize: typography.fontSize.md,
   },
 }); 

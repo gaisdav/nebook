@@ -9,12 +9,15 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@/hooks/useNavigation';
+import { useTheme } from '@/hooks/useTheme';
+import { spacing, typography, borderRadius } from '@/lib/theme';
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const { colors } = useTheme();
 
   const handleLogin = () => {
     // TODO: Implement login logic
@@ -26,21 +29,31 @@ export const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.content}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
+            Sign in to continue
+          </Text>
 
           <View style={styles.form}>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Email</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    borderColor: colors.inputBorder,
+                    color: colors.text,
+                  },
+                ]}
                 placeholder="Enter your email"
+                placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -50,10 +63,18 @@ export const LoginScreen = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={[styles.label, { color: colors.text }]}>Password</Text>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: colors.inputBackground,
+                    borderColor: colors.inputBorder,
+                    color: colors.text,
+                  },
+                ]}
                 placeholder="Enter your password"
+                placeholderTextColor={colors.inputPlaceholder}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
@@ -62,15 +83,20 @@ export const LoginScreen = () => {
               />
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-              <Text style={styles.loginButtonText}>Login</Text>
+            <TouchableOpacity
+              style={[styles.loginButton, { backgroundColor: colors.primary }]}
+              onPress={handleLogin}
+            >
+              <Text style={[styles.loginButtonText, { color: colors.textInverse }]}>
+                Login
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.createAccountButton}
               onPress={handleCreateAccount}
             >
-              <Text style={styles.createAccountButtonText}>
+              <Text style={[styles.createAccountButtonText, { color: colors.primary }]}>
                 Don't have an account? Create one
               </Text>
             </TouchableOpacity>
@@ -84,64 +110,55 @@ export const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   keyboardAvoidingView: {
     flex: 1,
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: spacing.lg,
     justifyContent: 'center',
   },
   title: {
-    fontSize: 32,
+    fontSize: typography.fontSize.xxxl,
     fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    marginBottom: spacing.xs,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 32,
+    fontSize: typography.fontSize.md,
+    marginBottom: spacing.xl,
   },
   form: {
-    gap: 16,
+    gap: spacing.md,
   },
   inputContainer: {
-    gap: 8,
+    gap: spacing.xs,
   },
   label: {
-    fontSize: 14,
+    fontSize: typography.fontSize.sm,
     fontWeight: '600',
-    color: '#1a1a1a',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    fontSize: typography.fontSize.md,
   },
   loginButton: {
-    backgroundColor: '#007AFF',
-    padding: 16,
-    borderRadius: 8,
+    padding: spacing.md,
+    borderRadius: borderRadius.md,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.xs,
   },
   loginButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    fontSize: typography.fontSize.md,
     fontWeight: '600',
   },
   createAccountButton: {
-    padding: 16,
+    padding: spacing.md,
     alignItems: 'center',
   },
   createAccountButtonText: {
-    color: '#007AFF',
-    fontSize: 16,
+    fontSize: typography.fontSize.md,
   },
 }); 

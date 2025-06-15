@@ -1,6 +1,5 @@
 import React, {useCallback} from 'react';
-import {ParamListBase, useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useNavigation} from '@/hooks/useNavigation';
 import {IconButton} from './components/IconButton';
 import {Home, Search, Settings, User} from 'lucide-react-native';
 import {HomeScreen} from './screens/Home';
@@ -23,7 +22,7 @@ const profileIcon = ({color, size}: IconProps) => (
 const Tab = createBottomTabNavigator();
 
 export function Tabs() {
-  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
+  const navigation = useNavigation();
 
   const headerSettings = useCallback(
     () => (
