@@ -3,8 +3,8 @@ import Toast from 'react-native-toast-message';
 import {NavigationContainer} from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
 import {StatusBar, useColorScheme} from 'react-native';
-import {ThemeProvider} from './ThemeContext.tsx';
-import { useTheme } from './hooks/useTheme.tsx';
+import { useTheme } from '@/hooks/useTheme';
+import { ThemeProvider } from './ThemeContext.tsx';
 
 function AppContent(): React.JSX.Element {
   const {colors, isDark} = useTheme();

@@ -1,32 +1,66 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@/hooks/useNavigation';
 import { useTheme } from '@/hooks/useTheme';
 import { spacing, typography, borderRadius } from '@/lib/theme';
+import { useAuthStore } from '@/data/auth/store/useAuthStore';
+import { Button } from '@/components/Button';
+import Toast from 'react-native-toast-message';
+import { Input } from '@/components/Input';
+import { PasswordInput } from '@/components/Input/PasswordInput';
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const { signIn, error, setError } = useAuthStore();
 
-  const handleLogin = () => {
-    // TODO: Implement login logic
-    console.log('Login pressed', { email, password });
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      await signIn({ email, password });
+      
+      // Navigate to Home screen and reset the navigation stack
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Tabs' }],
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleCreateAccount = () => {
+  const handleRegister = () => {
     navigation.navigate('Register');
   };
+
+  useEffect(() => {
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.signInError || 'Something went wrong',
+        props: {
+          onHide: () => {
+            setError(null)            
+          },
+        },
+      });
+    }
+  }, [error]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -43,61 +77,50 @@ export const LoginScreen = () => {
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text }]}>Email</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.inputBackground,
-                    borderColor: colors.inputBorder,
-                    color: colors.text,
-                  },
-                ]}
+              <Input
                 placeholder="Enter your email"
-                placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
+                editable={!isLoading}
               />
             </View>
 
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text }]}>Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.inputBackground,
-                    borderColor: colors.inputBorder,
-                    color: colors.text,
-                  },
-                ]}
+              <PasswordInput
                 placeholder="Enter your password"
-                placeholderTextColor={colors.inputPlaceholder}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
                 autoCapitalize="none"
                 autoComplete="password"
+                editable={!isLoading}
               />
             </View>
 
-            <TouchableOpacity
+            <Button
               style={[styles.loginButton, { backgroundColor: colors.primary }]}
               onPress={handleLogin}
+              disabled={isLoading}
             >
-              <Text style={[styles.loginButtonText, { color: colors.textInverse }]}>
-                Login
-              </Text>
-            </TouchableOpacity>
+              {isLoading ? (
+                <ActivityIndicator color={colors.textInverse} />
+              ) : (
+                <Text style={[styles.loginButtonText, { color: colors.textInverse }]}>
+                  Sign In
+                </Text>
+              )}
+            </Button>
 
             <TouchableOpacity
-              style={styles.createAccountButton}
-              onPress={handleCreateAccount}
+              style={styles.registerButton}
+              onPress={handleRegister}
+              disabled={isLoading}
             >
-              <Text style={[styles.createAccountButtonText, { color: colors.primary }]}>
-                Don't have an account? Create one
+              <Text style={[styles.registerButtonText, { color: colors.primary }]}>
+                Don't have an account? Sign up
               </Text>
             </TouchableOpacity>
           </View>
@@ -138,12 +161,6 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.sm,
     fontWeight: '600',
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: borderRadius.md,
-    padding: spacing.md,
-    fontSize: typography.fontSize.md,
-  },
   loginButton: {
     padding: spacing.md,
     borderRadius: borderRadius.md,
@@ -154,11 +171,11 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.md,
     fontWeight: '600',
   },
-  createAccountButton: {
+  registerButton: {
     padding: spacing.md,
     alignItems: 'center',
   },
-  createAccountButtonText: {
+  registerButtonText: {
     fontSize: typography.fontSize.md,
   },
 }); 

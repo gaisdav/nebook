@@ -1,33 +1,68 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
+  ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@/hooks/useNavigation';
 import { useTheme } from '@/hooks/useTheme';
 import { spacing, typography, borderRadius } from '@/lib/theme';
+import { useAuthStore } from '@/data/auth/store/useAuthStore';
+import { Button } from '@/components/Button';
+import Toast  from 'react-native-toast-message';
+import { Input } from '@/components/Input';
+import { PasswordInput } from '@/components/Input/PasswordInput';
 
 export const RegisterScreen = () => {
+  const { signUp, error, setError } = useAuthStore();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const { colors } = useTheme();
 
-  const handleRegister = () => {
-    // TODO: Implement registration logic
-    console.log('Register pressed', { email, name, password });
+  const handleRegister = async () => {
+    try {
+      setIsLoading(true);
+      await signUp({ email, password, fullName: name });
+      
+      // Navigate to Home screen and reset the navigation stack
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Tabs' }],
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      // TODO: Show error message to user
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBackToLogin = () => {
     navigation.goBack();
   };
+
+  useEffect(() => {
+    if (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.signUpError || 'Something went wrong',
+        props: {
+          onHide: () => {
+            setError(null)            
+          },
+        },
+      });
+    }
+  }, [error]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -44,78 +79,59 @@ export const RegisterScreen = () => {
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text }]}>Name</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.inputBackground,
-                    borderColor: colors.inputBorder,
-                    color: colors.text,
-                  },
-                ]}
+              <Input
                 placeholder="Enter your name"
-                placeholderTextColor={colors.inputPlaceholder}
                 value={name}
                 onChangeText={setName}
                 autoCapitalize="words"
                 autoComplete="name"
+                editable={!isLoading}
               />
             </View>
 
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text }]}>Email</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.inputBackground,
-                    borderColor: colors.inputBorder,
-                    color: colors.text,
-                  },
-                ]}
+              <Input
                 placeholder="Enter your email"
-                placeholderTextColor={colors.inputPlaceholder}
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
                 autoComplete="email"
+                editable={!isLoading}
               />
             </View>
 
             <View style={styles.inputContainer}>
               <Text style={[styles.label, { color: colors.text }]}>Password</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: colors.inputBackground,
-                    borderColor: colors.inputBorder,
-                    color: colors.text,
-                  },
-                ]}
+              <PasswordInput
                 placeholder="Create a password"
-                placeholderTextColor={colors.inputPlaceholder}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
                 autoCapitalize="none"
                 autoComplete="password-new"
+                editable={!isLoading}
               />
             </View>
 
-            <TouchableOpacity
+            <Button
               style={[styles.registerButton, { backgroundColor: colors.primary }]}
               onPress={handleRegister}
+              disabled={isLoading}
             >
-              <Text style={[styles.registerButtonText, { color: colors.textInverse }]}>
-                Create Account
-              </Text>
-            </TouchableOpacity>
+              {isLoading ? (
+                <ActivityIndicator color={colors.textInverse} />
+              ) : (
+                <Text style={[styles.registerButtonText, { color: colors.textInverse }]}>
+                  Create Account
+                </Text>
+              )}
+            </Button>
 
             <TouchableOpacity
               style={styles.loginButton}
               onPress={handleBackToLogin}
+              disabled={isLoading}
             >
               <Text style={[styles.loginButtonText, { color: colors.primary }]}>
                 Already have an account? Sign in
@@ -170,6 +186,9 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     alignItems: 'center',
     marginTop: spacing.xs,
+  },
+  disabledButton: {
+    opacity: 0.7,
   },
   registerButtonText: {
     fontSize: typography.fontSize.md,
