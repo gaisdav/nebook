@@ -34,8 +34,6 @@ export class AuthRepository implements TAuthRepository {
       },
     });
 
-    console.log('data', data);
-    console.log('error', error);
 
     if (error) {
       throw error;

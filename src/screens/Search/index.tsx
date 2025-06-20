@@ -18,7 +18,7 @@ import {Card} from '@/components/Card';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {Skeleton} from '@/components/Skeleton';
-import { useTheme } from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/useTheme';
 import {spacing, borderRadius, typography} from '@/lib/theme';
 
 const {width} = Dimensions.get('window');
@@ -49,9 +49,7 @@ export const SearchScreen = (): React.JSX.Element => {
   }, [submit]);
 
   const searchSubmitButton = useCallback(
-    () => (
-      <IconButton Icon={Search} onPress={handleSubmit} />
-    ),
+    () => <IconButton Icon={Search} onPress={handleSubmit} />,
     [handleSubmit],
   );
 
@@ -97,10 +95,17 @@ export const SearchScreen = (): React.JSX.Element => {
     }
   };
 
+  const handleBookPress = useCallback(
+    (bookId: string) => {
+      navigation.navigate('Book', {bookId: bookId});
+    },
+    [navigation],
+  );
+
   const renderItem = useCallback(
     ({item}: {item: IBook}) => (
       <View style={styles.cardContainer}>
-        <Card>
+        <Card onPress={() => handleBookPress(item.id)}>
           {item.cover && (
             <Image
               style={styles.cover}
@@ -110,7 +115,9 @@ export const SearchScreen = (): React.JSX.Element => {
             />
           )}
           {item.title && (
-            <Text style={[styles.title, {color: colors.text}]} ellipsizeMode="tail">
+            <Text
+              style={[styles.title, {color: colors.text}]}
+              ellipsizeMode="tail">
               {item.title}
             </Text>
           )}
@@ -125,7 +132,7 @@ export const SearchScreen = (): React.JSX.Element => {
         </Card>
       </View>
     ),
-    [colors],
+    [colors, handleBookPress],
   );
 
   return (

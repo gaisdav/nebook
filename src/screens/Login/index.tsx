@@ -83,7 +83,6 @@ export const LoginScreen = () => {
         text1: 'Error',
         text2: error.signInError || 'Something went wrong',
         onHide: () => {
-          console.log('onHide');
           setError(null);
         },
       });
