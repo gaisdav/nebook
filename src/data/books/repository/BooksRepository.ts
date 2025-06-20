@@ -162,6 +162,7 @@ export class BooksRepository implements TBooksRepository {
       {
         user_id: params.userId,
         book_provider_id: params.bookId,
+        //TODO: add status_enum to the database
         status_id: params.status,
       },
       {onConflict: 'user_id, book_provider_id'}, // Ключи для проверки на дубликаты
