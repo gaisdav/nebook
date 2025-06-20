@@ -23,11 +23,30 @@ export const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
   const navigation = useNavigation();
   const { colors } = useTheme();
 
+  const validatePasswords = () => {
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return false;
+    }
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters long');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
   const handleRegister = async () => {
+    if (!validatePasswords()) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       await signUp({ email, password, fullName: name });
@@ -114,6 +133,23 @@ export const RegisterScreen = () => {
               />
             </View>
 
+            <View style={styles.inputContainer}>
+              <Text style={[styles.label, { color: colors.text }]}>Confirm Password</Text>
+              <PasswordInput
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                autoCapitalize="none"
+                autoComplete="password-new"
+                editable={!isLoading}
+              />
+              {passwordError ? (
+                <Text style={[styles.errorText, { color: colors.error }]}>
+                  {passwordError}
+                </Text>
+              ) : null}
+            </View>
+
             <Button
               style={[styles.registerButton, { backgroundColor: colors.primary }]}
               onPress={handleRegister}
@@ -180,6 +216,10 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     padding: spacing.md,
     fontSize: typography.fontSize.md,
+  },
+  errorText: {
+    fontSize: typography.fontSize.sm,
+    marginTop: spacing.xs,
   },
   registerButton: {
     padding: spacing.md,
