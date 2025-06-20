@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, ViewStyle, StyleSheet, Pressable} from 'react-native';
+import {shadows} from '@/lib/theme';
 
 interface CardProps {
   children?: React.ReactNode;
@@ -22,6 +23,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 16,
     borderRadius: 12,
-    ...theme.light.shadow.base,
+    ...shadows.light.small,
   },
 });
