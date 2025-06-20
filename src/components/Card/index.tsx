@@ -4,16 +4,16 @@ import {shadows} from '@/lib/theme';
 
 interface CardProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: ViewStyle[];
   onPress?: () => void;
 }
 
-export const Card: React.FC<CardProps> = ({children, style, onPress}) => {
+export const Card: React.FC<CardProps> = ({children, style = [], onPress}) => {
   const Wrapper = children ? Pressable : React.Fragment;
 
   return (
     <Wrapper onPress={onPress}>
-      <View style={[styles.card, style]}>{children}</View>
+      <View style={[styles.card, ...style]}>{children}</View>
     </Wrapper>
   );
 };

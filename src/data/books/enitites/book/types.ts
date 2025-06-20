@@ -10,7 +10,6 @@ export interface IBook {
   categories?: string[];
   language?: string;
   pageCount?: number;
-
   status?: number | null;
   isFavorite?: boolean;
 }

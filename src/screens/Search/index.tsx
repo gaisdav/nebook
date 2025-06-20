@@ -106,29 +106,33 @@ export const SearchScreen = (): React.JSX.Element => {
     ({item}: {item: IBook}) => (
       <View style={styles.cardContainer}>
         <Card onPress={() => handleBookPress(item.id)}>
-          {item.cover && (
-            <Image
-              style={styles.cover}
-              source={{
-                uri: item.cover,
-              }}
-            />
-          )}
-          {item.title && (
-            <Text
-              style={[styles.title, {color: colors.text}]}
-              ellipsizeMode="tail">
-              {item.title}
-            </Text>
-          )}
-          {item.description && (
-            <Text
-              style={[styles.description, {color: colors.textSecondary}]}
-              numberOfLines={4}
-              ellipsizeMode="tail">
-              {item.description}
-            </Text>
-          )}
+          <View style={styles.cardContent}>
+            {item.cover && (
+              <Image
+                style={styles.cover}
+                source={{
+                  uri: item.cover,
+                }}
+              />
+            )}
+            <View style={styles.textContainer}>
+              {item.title && (
+                <Text
+                  style={[styles.title, {color: colors.text}]}
+                  ellipsizeMode="tail">
+                  {item.title}
+                </Text>
+              )}
+              {item.description && (
+                <Text
+                  style={[styles.description, {color: colors.textSecondary}]}
+                  numberOfLines={4}
+                  ellipsizeMode="tail">
+                  {item.description}
+                </Text>
+              )}
+            </View>
+          </View>
         </Card>
       </View>
     ),
@@ -173,12 +177,21 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginBottom: spacing.md,
   },
+  cardContent: {
+    flexDirection: 'row',
+  },
   cover: {
-    width: width * 0.3,
-    height: width * 0.45,
+    width: width * 0.2,
+    height: width * 0.3,
     borderRadius: borderRadius.md,
     resizeMode: 'contain',
-    marginBottom: spacing.sm,
+    marginLeft: spacing.md,
+    marginTop: spacing.md,
+    marginBottom: spacing.md,
+  },
+  textContainer: {
+    flex: 1,
+    padding: spacing.md,
   },
   loadingWrapper: {
     flex: 1,

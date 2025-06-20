@@ -8,7 +8,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import {LucideIcon} from 'lucide-react-native';
-import { borderRadius, spacing } from '@/lib/theme';
+import {borderRadius, spacing} from '@/lib/theme';
 
 interface IconButtonProps {
   Icon: LucideIcon;
@@ -19,6 +19,7 @@ interface IconButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   iconPosition?: 'left' | 'right';
+  iconColor?: string;
 }
 
 export const IconButton: React.FC<IconButtonProps> = ({
@@ -30,6 +31,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   style,
   textStyle,
   iconPosition = 'left',
+  iconColor = '#515151',
 }) => {
   const css = styles({disabled, loading});
 
@@ -43,13 +45,13 @@ export const IconButton: React.FC<IconButtonProps> = ({
       ) : (
         <>
           {iconPosition === 'left' && (
-            <Icon size={20} color="#515151" style={css.leftIcon} />
+            <Icon size={20} color={iconColor} style={css.leftIcon} />
           )}
 
           {text && <Text style={[css.text, textStyle]}>{text}</Text>}
 
           {iconPosition === 'right' && (
-            <Icon size={20} color="#515151" style={css.rightIcon} />
+            <Icon size={20} color={iconColor} style={css.rightIcon} />
           )}
         </>
       )}

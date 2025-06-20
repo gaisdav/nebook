@@ -1,5 +1,5 @@
-import { spacing } from '@/lib/theme';
-import { useTheme } from '@/hooks/useTheme';
+import {spacing} from '@/lib/theme';
+import {useTheme} from '@/hooks/useTheme';
 import React from 'react';
 import {
   View,
@@ -25,7 +25,8 @@ export const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
   const {colors} = useTheme();
 
   return (
-    <SafeAreaView style={[styles.safeArea, {backgroundColor: colors.background}]}>
+    <SafeAreaView
+      style={[styles.safeArea, {backgroundColor: colors.background}]}>
       {scrollable ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -43,7 +44,7 @@ export const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex: 1
+    flex: 1,
   },
   scrollContainer: {
     flex: 1,
