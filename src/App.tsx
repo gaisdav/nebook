@@ -3,8 +3,9 @@ import Toast from 'react-native-toast-message';
 import {NavigationContainer} from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
 import {StatusBar, useColorScheme} from 'react-native';
-import { useTheme } from '@/hooks/useTheme';
-import { ThemeProvider } from './ThemeContext.tsx';
+import {useTheme} from '@/hooks/useTheme';
+import {ThemeProvider} from './ThemeContext.tsx';
+import {GlobalAlert} from './components/GlobalAlert';
 
 function AppContent(): React.JSX.Element {
   const {colors, isDark} = useTheme();
@@ -23,6 +24,7 @@ function AppContent(): React.JSX.Element {
           swipeable: () => true,
         }}
       />
+      <GlobalAlert />
     </NavigationContainer>
   );
 }

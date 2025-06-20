@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,18 +8,21 @@ import {
   Platform,
   SafeAreaView,
   ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
-import { useNavigation } from '@/hooks/useNavigation';
-import { useTheme } from '@/hooks/useTheme';
-import { spacing, typography, borderRadius } from '@/lib/theme';
-import { useAuthStore } from '@/data/auth/store/useAuthStore';
-import { Button } from '@/components/Button';
-import Toast  from 'react-native-toast-message';
-import { Input } from '@/components/Input';
-import { PasswordInput } from '@/components/Input/PasswordInput';
+import {useNavigation} from '@/hooks/useNavigation';
+import {useTheme} from '@/hooks/useTheme';
+import {spacing, typography, borderRadius} from '@/lib/theme';
+import {useAuthStore} from '@/data/auth/store/useAuthStore';
+import {Button} from '@/components/Button';
+import Toast from 'react-native-toast-message';
+import {Input} from '@/components/Input';
+import {PasswordInput} from '@/components/Input/PasswordInput';
+import {getErrorMessage} from '@/lib/utils';
 
 export const RegisterScreen = () => {
-  const { signUp, error, setError } = useAuthStore();
+  const {signUp, error, setError} = useAuthStore();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +30,7 @@ export const RegisterScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const navigation = useNavigation();
-  const { colors } = useTheme();
+  const {colors} = useTheme();
 
   const validatePasswords = () => {
     if (password !== confirmPassword) {
@@ -49,16 +52,21 @@ export const RegisterScreen = () => {
 
     try {
       setIsLoading(true);
-      await signUp({ email, password, fullName: name });
-      
+      await signUp({email, password, fullName: name});
+
       // Navigate to Home screen and reset the navigation stack
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Tabs' }],
+        routes: [{name: 'Tabs'}],
       });
     } catch (error) {
-      console.error('Registration error:', error);
-      // TODO: Show error message to user
+      const errorMessage = getErrorMessage(error);
+
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: errorMessage,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +84,7 @@ export const RegisterScreen = () => {
         text2: error.signUpError || 'Something went wrong',
         props: {
           onHide: () => {
-            setError(null)            
+            setError(null);
           },
         },
       });
@@ -84,97 +92,110 @@ export const RegisterScreen = () => {
   }, [error]);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: colors.background}]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoidingView}
-      >
-        <View style={styles.content}>
-          <Text style={[styles.title, { color: colors.text }]}>Create Account</Text>
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
-            Sign up to get started
-          </Text>
+        style={styles.keyboardAvoidingView}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.content}>
+            <Text style={[styles.title, {color: colors.text}]}>
+              Create Account
+            </Text>
+            <Text style={[styles.subtitle, {color: colors.textSecondary}]}>
+              Sign up to get started
+            </Text>
 
-          <View style={styles.form}>
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>Name</Text>
-              <Input
-                placeholder="Enter your name"
-                value={name}
-                onChangeText={setName}
-                autoCapitalize="words"
-                autoComplete="name"
-                editable={!isLoading}
-              />
-            </View>
+            <View style={styles.form}>
+              <View style={styles.inputContainer}>
+                <Text style={[styles.label, {color: colors.text}]}>Name</Text>
+                <Input
+                  placeholder="Enter your name"
+                  value={name}
+                  onChangeText={setName}
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  editable={!isLoading}
+                />
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>Email</Text>
-              <Input
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                editable={!isLoading}
-              />
-            </View>
+              <View style={styles.inputContainer}>
+                <Text style={[styles.label, {color: colors.text}]}>Email</Text>
+                <Input
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  editable={!isLoading}
+                />
+              </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>Password</Text>
-              <PasswordInput
-                placeholder="Create a password"
-                value={password}
-                onChangeText={setPassword}
-                autoCapitalize="none"
-                autoComplete="password-new"
-                editable={!isLoading}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={[styles.label, { color: colors.text }]}>Confirm Password</Text>
-              <PasswordInput
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                autoCapitalize="none"
-                autoComplete="password-new"
-                editable={!isLoading}
-              />
-              {passwordError ? (
-                <Text style={[styles.errorText, { color: colors.error }]}>
-                  {passwordError}
+              <View style={styles.inputContainer}>
+                <Text style={[styles.label, {color: colors.text}]}>
+                  Password
                 </Text>
-              ) : null}
-            </View>
+                <PasswordInput
+                  placeholder="Create a password"
+                  value={password}
+                  onChangeText={setPassword}
+                  autoCapitalize="none"
+                  autoComplete="password-new"
+                  editable={!isLoading}
+                />
+              </View>
 
-            <Button
-              style={[styles.registerButton, { backgroundColor: colors.primary }]}
-              onPress={handleRegister}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color={colors.textInverse} />
-              ) : (
-                <Text style={[styles.registerButtonText, { color: colors.textInverse }]}>
-                  Create Account
+              <View style={styles.inputContainer}>
+                <Text style={[styles.label, {color: colors.text}]}>
+                  Confirm Password
                 </Text>
-              )}
-            </Button>
+                <PasswordInput
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  autoCapitalize="none"
+                  autoComplete="password-new"
+                  editable={!isLoading}
+                />
+                {passwordError ? (
+                  <Text style={[styles.errorText, {color: colors.error}]}>
+                    {passwordError}
+                  </Text>
+                ) : null}
+              </View>
 
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={handleBackToLogin}
-              disabled={isLoading}
-            >
-              <Text style={[styles.loginButtonText, { color: colors.primary }]}>
-                Already have an account? Sign in
-              </Text>
-            </TouchableOpacity>
+              <Button
+                style={[
+                  styles.registerButton,
+                  {backgroundColor: colors.primary},
+                ]}
+                onPress={handleRegister}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <ActivityIndicator color={colors.textInverse} />
+                ) : (
+                  <Text
+                    style={[
+                      styles.registerButtonText,
+                      {color: colors.textInverse},
+                    ]}>
+                    Create Account
+                  </Text>
+                )}
+              </Button>
+
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={handleBackToLogin}
+                disabled={isLoading}>
+                <Text style={[styles.loginButtonText, {color: colors.primary}]}>
+                  Already have an account? Sign in
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -241,4 +262,4 @@ const styles = StyleSheet.create({
   loginButtonText: {
     fontSize: typography.fontSize.md,
   },
-}); 
+});
