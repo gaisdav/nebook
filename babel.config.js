@@ -11,5 +11,6 @@ module.exports = {
       },
     ],
     ['module:react-native-dotenv'],
+    '@babel/plugin-transform-export-namespace-from',
   ],
 };

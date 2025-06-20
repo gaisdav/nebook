@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,13 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
 import {useNavigation} from '@/hooks/useNavigation';
 import {useTheme} from '@/hooks/useTheme';
 import {spacing, typography, borderRadius} from '@/lib/theme';
@@ -20,39 +22,57 @@ import Toast from 'react-native-toast-message';
 import {Input} from '@/components/Input';
 import {PasswordInput} from '@/components/Input/PasswordInput';
 import {getErrorMessage} from '@/lib/utils';
+import {ScreenWrapper} from '@/components/ScreenWrapper';
+
+const registerSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, 'Name is required')
+      .min(2, 'Name must be at least 2 characters'),
+    email: z
+      .string()
+      .min(1, 'Email is required')
+      .email('Invalid email address'),
+    password: z
+      .string()
+      .min(1, 'Password is required')
+      .min(6, 'Password must be at least 6 characters'),
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  });
+
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 export const RegisterScreen = () => {
-  const {signUp, error, setError} = useAuthStore();
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
   const navigation = useNavigation();
   const {colors} = useTheme();
+  const {signUp, error, setError} = useAuthStore();
 
-  const validatePasswords = () => {
-    if (password !== confirmPassword) {
-      setPasswordError('Passwords do not match');
-      return false;
-    }
-    if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
-      return false;
-    }
-    setPasswordError('');
-    return true;
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isSubmitting},
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-  const handleRegister = async () => {
-    if (!validatePasswords()) {
-      return;
-    }
-
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      setIsLoading(true);
-      await signUp({email, password, fullName: name});
+      await signUp({
+        email: data.email,
+        password: data.password,
+        fullName: data.name,
+      });
 
       // Navigate to Home screen and reset the navigation stack
       navigation.reset({
@@ -67,8 +87,6 @@ export const RegisterScreen = () => {
         text1: 'Error',
         text2: errorMessage,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -82,18 +100,15 @@ export const RegisterScreen = () => {
         type: 'error',
         text1: 'Error',
         text2: error.signUpError || 'Something went wrong',
-        props: {
-          onHide: () => {
-            setError(null);
-          },
+        onHide: () => {
+          setError(null);
         },
       });
     }
   }, [error]);
 
   return (
-    <SafeAreaView
-      style={[styles.container, {backgroundColor: colors.background}]}>
+    <ScreenWrapper scrollable style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}>
@@ -109,26 +124,42 @@ export const RegisterScreen = () => {
             <View style={styles.form}>
               <View style={styles.inputContainer}>
                 <Text style={[styles.label, {color: colors.text}]}>Name</Text>
-                <Input
-                  placeholder="Enter your name"
-                  value={name}
-                  onChangeText={setName}
-                  autoCapitalize="words"
-                  autoComplete="name"
-                  editable={!isLoading}
+                <Controller
+                  control={control}
+                  name="name"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <Input
+                      placeholder="Enter your name"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      autoCapitalize="words"
+                      autoComplete="name"
+                      editable={!isSubmitting}
+                      error={errors.name?.message}
+                    />
+                  )}
                 />
               </View>
 
               <View style={styles.inputContainer}>
                 <Text style={[styles.label, {color: colors.text}]}>Email</Text>
-                <Input
-                  placeholder="Enter your email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  editable={!isLoading}
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <Input
+                      placeholder="Enter your email"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      editable={!isSubmitting}
+                      error={errors.email?.message}
+                    />
+                  )}
                 />
               </View>
 
@@ -136,13 +167,21 @@ export const RegisterScreen = () => {
                 <Text style={[styles.label, {color: colors.text}]}>
                   Password
                 </Text>
-                <PasswordInput
-                  placeholder="Create a password"
-                  value={password}
-                  onChangeText={setPassword}
-                  autoCapitalize="none"
-                  autoComplete="password-new"
-                  editable={!isLoading}
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <PasswordInput
+                      placeholder="Create a password"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      autoCapitalize="none"
+                      autoComplete="password-new"
+                      editable={!isSubmitting}
+                      error={errors.password?.message}
+                    />
+                  )}
                 />
               </View>
 
@@ -150,19 +189,23 @@ export const RegisterScreen = () => {
                 <Text style={[styles.label, {color: colors.text}]}>
                   Confirm Password
                 </Text>
-                <PasswordInput
-                  placeholder="Confirm your password"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
-                  autoCapitalize="none"
-                  autoComplete="password-new"
-                  editable={!isLoading}
+                <Controller
+                  control={control}
+                  name="confirmPassword"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <PasswordInput
+                      placeholder="Confirm your password"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      autoCapitalize="none"
+                      autoComplete="password-new"
+                      editable={!isSubmitting}
+                      onSubmitEditing={handleSubmit(onSubmit)}
+                      error={errors.confirmPassword?.message}
+                    />
+                  )}
                 />
-                {passwordError ? (
-                  <Text style={[styles.errorText, {color: colors.error}]}>
-                    {passwordError}
-                  </Text>
-                ) : null}
               </View>
 
               <Button
@@ -170,9 +213,9 @@ export const RegisterScreen = () => {
                   styles.registerButton,
                   {backgroundColor: colors.primary},
                 ]}
-                onPress={handleRegister}
-                disabled={isLoading}>
-                {isLoading ? (
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}>
+                {isSubmitting ? (
                   <ActivityIndicator color={colors.textInverse} />
                 ) : (
                   <Text
@@ -188,7 +231,7 @@ export const RegisterScreen = () => {
               <TouchableOpacity
                 style={styles.loginButton}
                 onPress={handleBackToLogin}
-                disabled={isLoading}>
+                disabled={isSubmitting}>
                 <Text style={[styles.loginButtonText, {color: colors.primary}]}>
                   Already have an account? Sign in
                 </Text>
@@ -197,7 +240,7 @@ export const RegisterScreen = () => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,9 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {useForm, Controller} from 'react-hook-form';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {z} from 'zod';
 import {useNavigation} from '@/hooks/useNavigation';
 import {useTheme} from '@/hooks/useTheme';
 import {spacing, typography, borderRadius} from '@/lib/theme';
@@ -20,23 +23,38 @@ import Toast from 'react-native-toast-message';
 import {Input} from '@/components/Input';
 import {PasswordInput} from '@/components/Input/PasswordInput';
 import {getErrorMessage} from '@/lib/utils';
+import {ScreenWrapper} from '@/components/ScreenWrapper';
+
+const loginSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(6, 'Password must be at least 6 characters'),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const {colors} = useTheme();
   const {signIn, error, setError} = useAuthStore();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      return;
-    }
+  const {
+    control,
+    handleSubmit,
+    formState: {errors, isSubmitting},
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
 
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      setIsLoading(true);
-      await signIn({email, password});
+      await signIn(data);
 
       // Navigate to Home screen and reset the navigation stack
       navigation.reset({
@@ -51,8 +69,6 @@ export const LoginScreen = () => {
         text1: 'Error',
         text2: errorMessage,
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -75,8 +91,7 @@ export const LoginScreen = () => {
   }, [error]);
 
   return (
-    <SafeAreaView
-      style={[styles.container, {backgroundColor: colors.background}]}>
+    <ScreenWrapper scrollable style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}>
@@ -92,14 +107,22 @@ export const LoginScreen = () => {
             <View style={styles.form}>
               <View style={styles.inputContainer}>
                 <Text style={[styles.label, {color: colors.text}]}>Email</Text>
-                <Input
-                  placeholder="Enter your email"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  autoComplete="email"
-                  editable={!isLoading}
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <Input
+                      placeholder="Enter your email"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      keyboardType="email-address"
+                      autoCapitalize="none"
+                      autoComplete="email"
+                      editable={!isSubmitting}
+                      error={errors.email?.message}
+                    />
+                  )}
                 />
               </View>
 
@@ -107,22 +130,30 @@ export const LoginScreen = () => {
                 <Text style={[styles.label, {color: colors.text}]}>
                   Password
                 </Text>
-                <PasswordInput
-                  placeholder="Enter your password"
-                  value={password}
-                  onChangeText={setPassword}
-                  autoCapitalize="none"
-                  autoComplete="password"
-                  editable={!isLoading}
-                  onSubmitEditing={handleLogin}
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({field: {onChange, onBlur, value}}) => (
+                    <PasswordInput
+                      placeholder="Enter your password"
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                      autoCapitalize="none"
+                      autoComplete="password"
+                      editable={!isSubmitting}
+                      onSubmitEditing={handleSubmit(onSubmit)}
+                      error={errors.password?.message}
+                    />
+                  )}
                 />
               </View>
 
               <Button
                 style={[styles.loginButton, {backgroundColor: colors.primary}]}
-                onPress={handleLogin}
-                disabled={isLoading || !email || !password}>
-                {isLoading ? (
+                onPress={handleSubmit(onSubmit)}
+                disabled={isSubmitting}>
+                {isSubmitting ? (
                   <ActivityIndicator color={colors.textInverse} />
                 ) : (
                   <Text
@@ -138,7 +169,7 @@ export const LoginScreen = () => {
               <TouchableOpacity
                 style={styles.registerButton}
                 onPress={handleRegister}
-                disabled={isLoading}>
+                disabled={isSubmitting}>
                 <Text
                   style={[styles.registerButtonText, {color: colors.primary}]}>
                   Don't have an account? Sign up
@@ -148,7 +179,7 @@ export const LoginScreen = () => {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };
 
@@ -182,6 +213,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: typography.fontSize.sm,
     fontWeight: '600',
+  },
+  errorText: {
+    fontSize: typography.fontSize.sm,
+    marginTop: spacing.xs,
   },
   loginButton: {
     padding: spacing.md,
