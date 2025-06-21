@@ -1,5 +1,5 @@
 import {TextInput, TextInputProps, View, Text} from 'react-native';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {borderRadius, spacing, typography} from '@/lib/theme';
 
 interface InputProps extends TextInputProps {

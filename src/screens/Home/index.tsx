@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import {Text, View, FlatList, Image, StyleSheet} from 'react-native';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {useBookStore} from '@/data/books/store/useBookStore';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {Card} from '@/components/Card';

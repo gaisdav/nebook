@@ -1,10 +1,10 @@
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {
-  TChangeStatus,
   TUserIdBookId,
-  TGoogleBookSearchParams,
   TUserIdStatuses,
-} from '@/data/books/services/types.ts';
+  TGoogleBookSearchParams,
+  TChangeStatus,
+} from '@/data/books/types';
 
 export type TGoogleBook = {
   kind: string;

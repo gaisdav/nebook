@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, ViewStyle, StyleSheet, Pressable} from 'react-native';
 import {shadows} from '@/lib/theme';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 
 interface CardProps {
   children?: React.ReactNode;

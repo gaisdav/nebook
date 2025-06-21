@@ -1,11 +1,11 @@
 import React, {useCallback} from 'react';
-import {useNavigation} from '@/hooks/useNavigation';
+import {useNavigation} from '@/hooks/common/useNavigation';
 import {IconButton} from './components/IconButton';
 import {Home, Search, Settings, User} from 'lucide-react-native';
 import {HomeScreen} from './screens/Home';
 import {ProfileScreen} from './screens/Profile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useTheme, useTabTheme} from '@/hooks/useTheme';
+import {useTheme, useTabTheme} from '@/hooks/common/useTheme';
 
 type IconProps = {
   focused: boolean;

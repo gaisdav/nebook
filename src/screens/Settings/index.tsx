@@ -8,12 +8,12 @@ import {
   ScrollView,
 } from 'react-native';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {Card} from '@/components/Card';
 import {Button} from '@/components/Button';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
-import {useAlert} from '@/hooks/useAlert';
-import {useNavigation} from '@/hooks/useNavigation';
+import {useAlert} from '@/hooks/common/useAlert';
+import {useNavigation} from '@/hooks/common/useNavigation';
 import {cache} from '@/lib/cache/CacheService';
 
 export const SettingsScreen = () => {

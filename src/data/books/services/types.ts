@@ -1,33 +1,11 @@
-import { IBook } from '@/data/books/enitites/book/types.ts';
-import { IBookList } from '@/data/books/store/types.ts';
-
-export type TGoogleBookSearchParams = {
-  query: string;
-  page?: number;
-  limit?: number;
-};
-
-export type TChangeStatus = {
-  userId: string;
-  bookId: string;
-  status: number;
-};
-
-export type TUserIdBookId = {
-  userId: string;
-  bookId: string;
-};
-
-export type TUserIdStatuses = {
-  userId: string;
-  statuses: number[];
-};
-
-export type TUserIdBookIdStatuses = {
-  userId: number;
-  bookId: string;
-  statuses: number[];
-};
+import {
+  TGoogleBookSearchParams,
+  TUserIdBookId,
+  TUserIdStatuses,
+  TChangeStatus,
+} from '../types';
+import {IBook} from '@/data/books/enitites/book/types';
+import {IBookList} from '@/data/books/store/types';
 
 export type TBooksService = {
   searchBooks: (params: TGoogleBookSearchParams) => Promise<IBookList>;

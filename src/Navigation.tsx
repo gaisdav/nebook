@@ -8,7 +8,7 @@ import {RootStackParamList} from '@/types.ts';
 import {LoginScreen} from './screens/Login';
 import {RegisterScreen} from './screens/Register';
 import {useAuthStore} from './data/auth/store/useAuthStore.tsx';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme.tsx';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

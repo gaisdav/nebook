@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {spacing} from '@/lib/theme';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 
 export const ProfileScreen = () => {
   const {user} = useAuthStore();

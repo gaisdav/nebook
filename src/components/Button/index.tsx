@@ -3,7 +3,7 @@ import {
   TouchableOpacityProps,
   StyleSheet,
 } from 'react-native';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 
 interface ButtonProps extends TouchableOpacityProps {
   variant?: 'primary' | 'secondary';

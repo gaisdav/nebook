@@ -3,7 +3,7 @@ import {
   TChangeStatus,
   TGoogleBookSearchParams,
   TUserIdStatuses,
-} from '@/data/books/services/types.ts';
+} from '@/data/books/types';
 import { TGoogleBook, TGoogleBookSearch } from '@/data/books/store/types.ts';
 
 export type TBooksRepository = {

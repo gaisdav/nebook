@@ -18,7 +18,7 @@ import {Card} from '@/components/Card';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {Skeleton} from '@/components/Skeleton';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {spacing, borderRadius, typography} from '@/lib/theme';
 
 const {width} = Dimensions.get('window');

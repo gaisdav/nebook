@@ -7,9 +7,11 @@ import {
 } from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
 import {StatusBar, useColorScheme} from 'react-native';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme.tsx';
 import {ThemeProvider} from './ThemeContext.tsx';
 import {GlobalAlert} from './components/GlobalAlert';
+import {QueryClient} from '@tanstack/react-query';
+import {QueryClientProvider} from '@tanstack/react-query';
 
 function AppContent(): React.JSX.Element {
   const {colors, isDark} = useTheme();
@@ -60,10 +62,15 @@ function AppContent(): React.JSX.Element {
   );
 }
 
+// Create a client
+const queryClient = new QueryClient();
+
 function App(): React.JSX.Element {
   return (
     <ThemeProvider>
-      <AppContent />
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

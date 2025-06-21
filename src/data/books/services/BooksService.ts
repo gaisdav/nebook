@@ -1,14 +1,14 @@
-import {
-  TUserIdBookId,
-  TBooksService,
-  TChangeStatus,
-  TGoogleBookSearchParams,
-  TUserIdStatuses,
-} from '@/data/books/services/types.ts';
+import {TBooksService} from '@/data/books/services/types.ts';
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {TBooksRepository} from '@/data/books/repository/types.ts';
 import {GoogleBookItems} from '@/data/books/decorators/GoogleBooks.decorator.ts';
 import {GoogleBook} from '@/data/books/decorators/GoogleBook.decorator.ts';
+import {
+  TGoogleBookSearchParams,
+  TUserIdBookId,
+  TUserIdStatuses,
+  TChangeStatus,
+} from '@/data/books/types';
 
 const defaultPage = 1;
 const defaultLimit = 10;

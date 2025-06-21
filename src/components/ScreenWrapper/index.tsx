@@ -1,5 +1,5 @@
 import {spacing} from '@/lib/theme';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import React from 'react';
 import {
   View,

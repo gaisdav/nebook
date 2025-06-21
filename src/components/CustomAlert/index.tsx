@@ -1,4 +1,4 @@
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import React from 'react';
 import {
   Modal,

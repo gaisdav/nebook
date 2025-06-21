@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Easing, DimensionValue} from 'react-native';
 import {borderRadius as borderRadiusTheme} from '@/lib/theme';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 
 interface SkeletonProps {
   width?: DimensionValue;

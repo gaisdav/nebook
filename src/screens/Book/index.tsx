@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '@/types.ts';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {spacing, borderRadius, typography, shadows} from '@/lib/theme';
 import {Card} from '@/components/Card';
 import {IconButton} from '@/components/IconButton';
@@ -18,6 +18,7 @@ import {
 import Toast from 'react-native-toast-message';
 import {getErrorMessage} from '@/lib/utils';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
+import {useBook} from '@/hooks/books/useBooks';
 
 const {width} = Dimensions.get('window');
 
@@ -32,30 +33,24 @@ export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
   const bookId = route.params?.bookId;
   const {user} = useAuthStore();
-  const book = useBookStore(state => state.book);
-  const loading = useBookStore(state => state.bookLoading);
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
   const statusLoading = useBookStore(state => state.statusLoading);
-  const fetchBook = useBookStore(state => state.fetchBook);
   const addToFavorite = useBookStore(state => state.addToFavorite);
   const removeFromFavorite = useBookStore(state => state.removeFromFavorite);
   const changeBookStatus = useBookStore(state => state.changeBookStatus);
   const resetBookStatus = useBookStore(state => state.resetBookStatus);
 
+  const {book, isBookLoading, bookError} = useBook({
+    bookId: bookId,
+    userId: user?.id,
+    fetchBook: true,
+    fetchFavorite: true,
+    fetchStatus: true,
+  });
+
   const userId = String(user?.id);
 
   const {colors, isDark} = useTheme();
-
-  useEffect(() => {
-    if (!bookId) {
-      return;
-    }
-
-    fetchBook({
-      bookId: bookId,
-      userId: userId,
-    });
-  }, [bookId, fetchBook]);
 
   const handleToggleFavorite = async () => {
     if (!bookId || !book) return;
@@ -136,7 +131,7 @@ export const BookScreen = (): React.JSX.Element => {
     return isActive ? colors.textInverse : colors.textSecondary;
   };
 
-  if (!book && loading) {
+  if (!book && isBookLoading) {
     return (
       <ScreenWrapper>
         <View

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 import {useState} from 'react';
 import {Eye, EyeOff} from 'lucide-react-native';
 import {borderRadius, spacing, typography} from '@/lib/theme';

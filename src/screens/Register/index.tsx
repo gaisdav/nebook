@@ -13,8 +13,8 @@ import {
 import {useForm, Controller} from 'react-hook-form';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {z} from 'zod';
-import {useNavigation} from '@/hooks/useNavigation';
-import {useTheme} from '@/hooks/useTheme';
+import {useNavigation} from '@/hooks/common/useNavigation';
+import {useTheme} from '@/hooks/common/useTheme';
 import {spacing, typography, borderRadius} from '@/lib/theme';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {Button} from '@/components/Button';

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {LucideIcon} from 'lucide-react-native';
 import {borderRadius, spacing} from '@/lib/theme';
-import {useTheme} from '@/hooks/useTheme';
+import {useTheme} from '@/hooks/common/useTheme';
 
 interface IconButtonProps {
   Icon: LucideIcon;
