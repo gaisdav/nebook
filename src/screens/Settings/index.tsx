@@ -59,14 +59,22 @@ export const SettingsScreen = () => {
     subtitle,
     onPress,
     rightComponent,
+    isLast,
   }: {
     title: string;
     subtitle?: string;
     onPress?: () => void;
     rightComponent?: React.ReactNode;
+    isLast?: boolean;
   }) => (
     <TouchableOpacity
-      style={[styles.settingItem, {borderBottomColor: colors.borderLight}]}
+      style={[
+        styles.settingItem,
+        {
+          borderBottomColor: colors.borderLight,
+          borderBottomWidth: isLast ? 0 : 1,
+        },
+      ]}
       onPress={onPress}
       disabled={!onPress}>
       <View style={styles.settingItemContent}>
@@ -113,9 +121,10 @@ export const SettingsScreen = () => {
           title="Use System Theme"
           subtitle="Follow your device's theme setting"
           onPress={setSystemTheme}
+          isLast
         />
       </Card>
-
+      {/* 
       <Text style={[styles.sectionTitle, {color: colors.text}]}>Account</Text>
 
       <Card
@@ -176,7 +185,7 @@ export const SettingsScreen = () => {
             // Navigate to contact support
           }}
         />
-      </Card>
+      </Card> */}
 
       <View style={styles.logoutSection}>
         <Button
