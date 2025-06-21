@@ -39,6 +39,14 @@ export const colors = {
     inputBackground: '#F9F9F9',
     inputBorder: '#DDDDDD',
     inputPlaceholder: '#999999',
+
+    // Tab colors
+    tabBar: '#FFFFFF',
+    tabBarBorder: '#DDDDDD',
+    tabActive: '#007AFF',
+    tabInactive: '#999999',
+    tabLabel: '#666666',
+    tabLabelActive: '#007AFF',
   },
   dark: {
     // Primary colors
@@ -76,6 +84,14 @@ export const colors = {
     inputBackground: '#1C1C1E',
     inputBorder: '#38383A',
     inputPlaceholder: '#8E8E93',
+
+    // Tab colors
+    tabBar: '#1C1C1E',
+    tabBarBorder: '#38383A',
+    tabActive: '#0A84FF',
+    tabInactive: '#8E8E93',
+    tabLabel: '#EBEBF5',
+    tabLabelActive: '#0A84FF',
   },
 };
 
@@ -212,4 +228,17 @@ export const animation = {
 // Helper function to get theme colors based on color scheme
 export const getThemeColors = (isDark: boolean) => {
   return isDark ? colors.dark : colors.light;
+};
+
+// Helper function to get tab-specific theme colors
+export const getTabThemeColors = (isDark: boolean) => {
+  const themeColors = getThemeColors(isDark);
+  return {
+    tabBar: themeColors.tabBar,
+    tabBarBorder: themeColors.tabBarBorder,
+    tabActive: themeColors.tabActive,
+    tabInactive: themeColors.tabInactive,
+    tabLabel: themeColors.tabLabel,
+    tabLabelActive: themeColors.tabLabelActive,
+  };
 }; 

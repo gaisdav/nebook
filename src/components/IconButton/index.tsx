@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {LucideIcon} from 'lucide-react-native';
 import {borderRadius, spacing} from '@/lib/theme';
+import {useTheme} from '@/hooks/useTheme';
 
 interface IconButtonProps {
   Icon: LucideIcon;
@@ -31,17 +32,22 @@ export const IconButton: React.FC<IconButtonProps> = ({
   style,
   textStyle,
   iconPosition = 'left',
-  iconColor = '#515151',
+  iconColor,
 }) => {
+  const {colors} = useTheme();
   const css = styles({disabled, loading});
 
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={loading || disabled}
-      style={[css.container, style]}>
+      style={[
+        css.container,
+        {backgroundColor: colors.backgroundTertiary},
+        style,
+      ]}>
       {loading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={colors.text} />
       ) : (
         <>
           {iconPosition === 'left' && (
@@ -71,11 +77,10 @@ const styles = ({
       justifyContent: 'center',
       padding: spacing.sm,
       borderRadius: borderRadius.md,
-      backgroundColor: disabled ? '#ccc' : '#f4f4f4',
       opacity: loading ? 0.7 : 1,
     },
 
     rightIcon: {marginLeft: text ? 8 : 0},
     leftIcon: {marginRight: text ? 8 : 0},
-    text: {color: '#515151', fontSize: 16},
+    text: {fontSize: 16},
   });

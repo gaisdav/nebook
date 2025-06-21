@@ -7,17 +7,32 @@ import {BookScreen} from '@/screens/Book';
 import {RootStackParamList} from '@/types.ts';
 import {LoginScreen} from './screens/Login';
 import {RegisterScreen} from './screens/Register';
-import { useAuthStore } from './data/auth/store/useAuthStore.tsx';
+import {useAuthStore} from './data/auth/store/useAuthStore.tsx';
+import {useTheme} from '@/hooks/useTheme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export function Navigation() {
   const {isAuthenticated} = useAuthStore();
+  const {colors} = useTheme();
 
   return (
     <Stack.Navigator
-      screenOptions={{headerBackButtonDisplayMode: 'minimal'}}
-      initialRouteName={isAuthenticated ? 'Tabs': 'Login'}>
+      screenOptions={{
+        headerBackButtonDisplayMode: 'minimal',
+        headerStyle: {
+          backgroundColor: colors.background,
+        },
+        headerTintColor: colors.text,
+        headerTitleStyle: {
+          color: colors.text,
+          fontWeight: '600',
+        },
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+      initialRouteName={isAuthenticated ? 'Tabs' : 'Login'}>
       <Stack.Screen
         name="Login"
         component={LoginScreen}

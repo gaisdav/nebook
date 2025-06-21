@@ -1,3 +1,4 @@
+import {useTheme} from '@/hooks/useTheme';
 import React from 'react';
 import {
   Modal,
@@ -31,6 +32,7 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
   confirmText = 'Confirm',
   cancelText = 'Cancel',
 }) => {
+  const {colors} = useTheme();
   const scale = React.useRef(new Animated.Value(0.8)).current;
 
   React.useEffect(() => {
@@ -46,16 +48,23 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <Animated.View style={[styles.container, {transform: [{scale}]}]}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.message}>{message}</Text>
+      <View style={[styles.overlay, {backgroundColor: colors.overlay}]}>
+        <Animated.View
+          style={[
+            styles.container,
+            {transform: [{scale}]},
+            {backgroundColor: colors.backgroundSecondary},
+          ]}>
+          <Text style={[styles.title, {color: colors.text}]}>{title}</Text>
+          <Text style={[styles.message, {color: colors.text}]}>{message}</Text>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
-              <Text style={styles.cancelText}>{cancelText}</Text>
+              <Text style={[{color: colors.text}]}>{cancelText}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.confirmButton} onPress={onConfirm}>
-              <Text style={styles.confirmText}>{confirmText}</Text>
+            <TouchableOpacity
+              style={[styles.confirmButton, {backgroundColor: colors.primary}]}
+              onPress={onConfirm}>
+              <Text style={[{color: colors.textInverse}]}>{confirmText}</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
@@ -67,13 +76,11 @@ export const CustomAlert: React.FC<CustomAlertProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   container: {
     width: SCREEN_WIDTH * 0.8,
-    backgroundColor: '#fff',
     borderRadius: 16,
     padding: 24,
     elevation: 5,
@@ -85,7 +92,6 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 16,
-    color: '#333',
     marginBottom: 24,
   },
   actions: {
@@ -96,17 +102,9 @@ const styles = StyleSheet.create({
     marginRight: 12,
     padding: 8,
   },
-  cancelText: {
-    color: '#999',
-  },
   confirmButton: {
-    backgroundColor: '#007AFF',
     borderRadius: 8,
     paddingVertical: 8,
     paddingHorizontal: 16,
-  },
-  confirmText: {
-    color: '#fff',
-    fontWeight: '600',
   },
 });
