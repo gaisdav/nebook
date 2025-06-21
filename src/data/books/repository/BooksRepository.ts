@@ -69,7 +69,7 @@ export class BooksRepository implements TBooksRepository {
     const bookIds = data.map(book => book.book_provider_id);
 
     await cache.set('booksStatuses', cacheKey, bookIds, {
-      ttl: 1000 * 60 * 60 * 24,
+      ttl: 1000 * 60 * 2, // 2 minutes
     });
 
     return bookIds;
@@ -122,7 +122,7 @@ export class BooksRepository implements TBooksRepository {
     const bookProviderId = data?.book_provider_id || null;
 
     await cache.set('favoriteBooks', cacheKey, bookProviderId, {
-      ttl: 1000 * 60 * 60 * 24,
+      ttl: 1000 * 60 * 2, // 2 minutes
     });
 
     return bookProviderId;
@@ -198,7 +198,7 @@ export class BooksRepository implements TBooksRepository {
     const status = data?.status_id || null;
 
     await cache.set('booksStatuses', cacheKey, status || null, {
-      ttl: 1000 * 60 * 60 * 24,
+      ttl: 1000 * 60 * 2, // 2 minutes
     });
 
     return status;
