@@ -13,7 +13,7 @@ export type TBooksRepository = {
   addToFavorite(params: TUserIdBookId): Promise<void>;
   removeFromFavorite(params: TUserIdBookId): Promise<void>;
   fetchFavoriteBookData(params: TUserIdBookId): Promise<string | null>;
-  getFavoriteBooksData(userId: number): Promise<string[]>;
+  getFavoriteBooksData(userId: string): Promise<string[]>;
 
   changeBookStatus(params: TChangeStatus): Promise<void>;
   fetchBookStatus(params: TUserIdBookId): Promise<number | null>;

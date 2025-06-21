@@ -69,7 +69,7 @@ export class BooksService implements TBooksService {
     await this.repository.removeFromFavorite(params);
   }
 
-  async fetchFavoriteBooks(userId: number): Promise<IBook[]> {
+  async fetchFavoriteBooks(userId: string): Promise<IBook[]> {
     const bookIds = await this.repository.getFavoriteBooksData(userId);
 
     return Promise.all(

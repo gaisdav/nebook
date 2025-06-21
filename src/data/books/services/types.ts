@@ -8,18 +8,18 @@ export type TGoogleBookSearchParams = {
 };
 
 export type TChangeStatus = {
-  userId: number;
+  userId: string;
   bookId: string;
   status: number;
 };
 
 export type TUserIdBookId = {
-  userId: number;
+  userId: string;
   bookId: string;
 };
 
 export type TUserIdStatuses = {
-  userId: number;
+  userId: string;
   statuses: number[];
 };
 
@@ -33,7 +33,7 @@ export type TBooksService = {
   searchBooks: (params: TGoogleBookSearchParams) => Promise<IBookList>;
   addToFavorite: (params: TUserIdBookId) => Promise<void>;
   removeFromFavorite: (params: TUserIdBookId) => Promise<void>;
-  fetchFavoriteBooks: (userId: number) => Promise<IBook[]>;
+  fetchFavoriteBooks: (userId: string) => Promise<IBook[]>;
   fetchBookById: (params: TUserIdBookId) => Promise<IBook>;
   fetchBooksByStatuses: (params: TUserIdStatuses) => Promise<IBook[]>;
 

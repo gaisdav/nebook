@@ -43,7 +43,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
       disabled={loading || disabled}
       style={[
         css.container,
-        {backgroundColor: colors.backgroundTertiary},
+        {backgroundColor: colors.backgroundSecondary},
         style,
       ]}>
       {loading ? (
@@ -51,13 +51,21 @@ export const IconButton: React.FC<IconButtonProps> = ({
       ) : (
         <>
           {iconPosition === 'left' && (
-            <Icon size={20} color={iconColor} style={css.leftIcon} />
+            <Icon
+              size={20}
+              color={iconColor || colors.text}
+              style={css.leftIcon}
+            />
           )}
 
           {text && <Text style={[css.text, textStyle]}>{text}</Text>}
 
           {iconPosition === 'right' && (
-            <Icon size={20} color={iconColor} style={css.rightIcon} />
+            <Icon
+              size={20}
+              color={iconColor || colors.text}
+              style={css.rightIcon}
+            />
           )}
         </>
       )}

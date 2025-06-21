@@ -75,7 +75,7 @@ export function Tabs() {
         options={{
           tabBarIcon: homeIcon,
           headerRight: headerSearch,
-          tabBarLabel: 'Home',
+          tabBarLabel: 'My Books',
         }}
       />
       <Tab.Screen

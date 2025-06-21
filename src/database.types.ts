@@ -32,19 +32,19 @@ export type Database = {
           book_provider_id: string;
           created_at: string | null;
           id: number;
-          user_id: number;
+          user_provider_id: string;
         };
         Insert: {
           book_provider_id: string;
           created_at?: string | null;
           id?: number;
-          user_id: number;
+          user_provider_id: string;
         };
         Update: {
           book_provider_id?: string;
           created_at?: string | null;
           id?: number;
-          user_id?: number;
+          user_provider_id?: string;
         };
         Relationships: [];
       };
@@ -55,7 +55,7 @@ export type Database = {
           id: number;
           status_id: number | null;
           updated_at: string | null;
-          user_id: number;
+          user_provider_id: string;
         };
         Insert: {
           book_provider_id: string;
@@ -63,7 +63,7 @@ export type Database = {
           id?: number;
           status_id?: number | null;
           updated_at?: string | null;
-          user_id: number;
+          user_provider_id: string;
         };
         Update: {
           book_provider_id?: string;
@@ -71,7 +71,7 @@ export type Database = {
           id?: number;
           status_id?: number | null;
           updated_at?: string | null;
-          user_id?: number;
+          user_provider_id?: string;
         };
         Relationships: [
           {

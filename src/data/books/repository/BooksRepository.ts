@@ -60,7 +60,7 @@ export class BooksRepository implements TBooksRepository {
       .from('user_books')
       .select('book_provider_id')
       .in('status_id', params.statuses)
-      .eq('user_id', params.userId);
+      .eq('user_provider_id', params.userId);
 
     if (error) {
       throw new Error(error.message);
@@ -79,7 +79,7 @@ export class BooksRepository implements TBooksRepository {
     await cache.clear('favoriteBooks');
 
     await this.repository.from('favorite_books').insert({
-      user_id: params.userId,
+      user_provider_id: params.userId,
       book_provider_id: params.bookId,
     });
   }
@@ -90,7 +90,7 @@ export class BooksRepository implements TBooksRepository {
     await this.repository
       .from('favorite_books')
       .delete()
-      .eq('user_id', params.userId)
+      .eq('user_provider_id', params.userId)
       .eq('book_provider_id', params.bookId);
   }
 
@@ -110,8 +110,8 @@ export class BooksRepository implements TBooksRepository {
 
     const {data, error} = await this.repository
       .from('favorite_books')
-      .select('id, user_id, book_provider_id')
-      .eq('user_id', userId)
+      .select('id, user_provider_id, book_provider_id')
+      .eq('user_provider_id', userId)
       .eq('book_provider_id', bookId)
       .maybeSingle();
 
@@ -128,7 +128,7 @@ export class BooksRepository implements TBooksRepository {
     return bookProviderId;
   }
 
-  async getFavoriteBooksData(userId: number): Promise<string[]> {
+  async getFavoriteBooksData(userId: string): Promise<string[]> {
     const dbKey = 'favorite_books';
     const cacheKey = cacheKeys.favoriteBooks.favoriteBooksData(userId);
     const cachedBooks = await cache.get<string[]>('favoriteBooks', cacheKey);
@@ -140,7 +140,7 @@ export class BooksRepository implements TBooksRepository {
     const {data, error} = await this.repository
       .from(dbKey)
       .select('book_provider_id')
-      .eq('user_id', userId);
+      .eq('user_provider_id', userId);
 
     if (error) {
       throw new Error(error.message);
@@ -160,12 +160,12 @@ export class BooksRepository implements TBooksRepository {
 
     const {error} = await this.repository.from('user_books').upsert(
       {
-        user_id: params.userId,
+        user_provider_id: params.userId,
         book_provider_id: params.bookId,
         //TODO: add status_enum to the database
         status_id: params.status,
       },
-      {onConflict: 'user_id, book_provider_id'}, // Ключи для проверки на дубликаты
+      {onConflict: 'user_provider_id, book_provider_id'}, // Ключи для проверки на дубликаты
     );
 
     if (error) {
@@ -187,7 +187,7 @@ export class BooksRepository implements TBooksRepository {
     const {data, error} = await this.repository
       .from('user_books')
       .select('status_id')
-      .eq('user_id', params.userId)
+      .eq('user_provider_id', params.userId)
       .eq('book_provider_id', params.bookId)
       .maybeSingle();
 
@@ -210,7 +210,7 @@ export class BooksRepository implements TBooksRepository {
     const {error} = await this.repository
       .from('user_books')
       .delete()
-      .eq('user_id', params.userId)
+      .eq('user_provider_id', params.userId)
       .eq('book_provider_id', params.bookId);
 
     if (error) {

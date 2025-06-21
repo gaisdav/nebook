@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, Animated, Easing, DimensionValue} from 'react-native';
 import {borderRadius as borderRadiusTheme} from '@/lib/theme';
+import {useTheme} from '@/hooks/useTheme';
 
 interface SkeletonProps {
   width?: DimensionValue;
@@ -15,6 +16,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   borderRadius = borderRadiusTheme.md,
   variant = 'rect',
 }) => {
+  const {colors} = useTheme();
   const shimmerAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
@@ -37,17 +39,29 @@ export const Skeleton: React.FC<SkeletonProps> = ({
     <View
       style={[
         styles.skeleton,
-        {width, height, borderRadius},
+        {
+          width,
+          height,
+          borderRadius,
+          backgroundColor: colors.backgroundTertiary,
+        },
         variant === 'circle' && {borderRadius: (height as number) / 2},
       ]}>
-      <Animated.View style={[styles.shimmer, {transform: [{translateX}]}]} />
+      <Animated.View
+        style={[
+          styles.shimmer,
+          {
+            transform: [{translateX}],
+            backgroundColor: colors.overlayLight,
+          },
+        ]}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   skeleton: {
-    backgroundColor: '#E1E1E1',
     overflow: 'hidden',
   },
   shimmer: {
@@ -56,6 +70,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
   },
 });

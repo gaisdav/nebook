@@ -17,6 +17,7 @@ import {
 } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 import {getErrorMessage} from '@/lib/utils';
+import {useAuthStore} from '@/data/auth/store/useAuthStore';
 
 const {width} = Dimensions.get('window');
 
@@ -30,7 +31,7 @@ const BOOK_STATUS = {
 export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
   const bookId = route.params?.bookId;
-
+  const {user} = useAuthStore();
   const book = useBookStore(state => state.book);
   const loading = useBookStore(state => state.bookLoading);
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
@@ -41,6 +42,8 @@ export const BookScreen = (): React.JSX.Element => {
   const changeBookStatus = useBookStore(state => state.changeBookStatus);
   const resetBookStatus = useBookStore(state => state.resetBookStatus);
 
+  const userId = String(user?.id);
+
   const {colors, isDark} = useTheme();
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export const BookScreen = (): React.JSX.Element => {
 
     fetchBook({
       bookId: bookId,
-      userId: 1,
+      userId: userId,
     });
   }, [bookId, fetchBook]);
 
@@ -61,12 +64,12 @@ export const BookScreen = (): React.JSX.Element => {
       if (book.isFavorite) {
         await removeFromFavorite({
           bookId: bookId,
-          userId: 1,
+          userId: userId,
         });
       } else {
         await addToFavorite({
           bookId: bookId,
-          userId: 1,
+          userId: userId,
         });
       }
     } catch (error) {
@@ -85,7 +88,7 @@ export const BookScreen = (): React.JSX.Element => {
     try {
       await changeBookStatus({
         bookId: bookId,
-        userId: 1,
+        userId: userId,
         status: status,
       });
     } catch (error) {
@@ -104,7 +107,7 @@ export const BookScreen = (): React.JSX.Element => {
     try {
       await resetBookStatus({
         bookId: bookId,
-        userId: 1,
+        userId: userId,
       });
     } catch (error) {
       const errorMessage = getErrorMessage(error);
