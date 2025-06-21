@@ -149,7 +149,7 @@ export class BooksRepository implements TBooksRepository {
     const bookIds = data.map(book => book.book_provider_id);
 
     await cache.set('favoriteBooks', cacheKey, bookIds, {
-      ttl: 1000 * 60 * 60 * 24,
+      ttl: 1000 * 60 * 2, // 2 minutes
     });
 
     return bookIds;
