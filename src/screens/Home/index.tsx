@@ -1,12 +1,5 @@
-import React, {useEffect, useCallback} from 'react';
-import {
-  Text,
-  View,
-  FlatList,
-  Image,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
+import React, {useCallback} from 'react';
+import {Text, View, FlatList, Image, StyleSheet} from 'react-native';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {useTheme} from '@/hooks/useTheme';
 import {useBookStore} from '@/data/books/store/useBookStore';
@@ -18,6 +11,7 @@ import {spacing, borderRadius, typography} from '@/lib/theme';
 import {useNavigation} from '@react-navigation/native';
 import {ParamListBase} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {useFocusEffect} from '@react-navigation/native';
 
 // Status constants
 const BOOK_STATUS = {
@@ -61,20 +55,22 @@ export const HomeScreen = (): React.JSX.Element => {
     state => state.fetchBooksByStatuses,
   );
 
-  useEffect(() => {
-    if (user?.id) {
-      getFavoriteBooks(user.id);
-      // Fetch books by all statuses
-      fetchBooksByStatuses({
-        userId: user.id,
-        statuses: [
-          BOOK_STATUS.WANT_TO_READ,
-          BOOK_STATUS.READING,
-          BOOK_STATUS.READ,
-        ],
-      });
-    }
-  }, [user?.id, getFavoriteBooks, fetchBooksByStatuses]);
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.id) {
+        getFavoriteBooks(user.id);
+
+        fetchBooksByStatuses({
+          userId: user.id,
+          statuses: [
+            BOOK_STATUS.WANT_TO_READ,
+            BOOK_STATUS.READING,
+            BOOK_STATUS.READ,
+          ],
+        });
+      }
+    }, [user?.id, getFavoriteBooks, fetchBooksByStatuses]),
+  );
 
   const handleBookPress = useCallback(
     (bookId: string) => {
