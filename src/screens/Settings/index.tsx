@@ -14,12 +14,24 @@ import {Button} from '@/components/Button';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useAlert} from '@/hooks/useAlert';
 import {useNavigation} from '@/hooks/useNavigation';
+import {cache} from '@/lib/cache/CacheService';
 
 export const SettingsScreen = () => {
-  const {colors, isDark, toggleTheme} = useTheme();
+  const {colors, isDark, toggleTheme, setSystemTheme} = useTheme();
   const {signOut} = useAuthStore();
   const {alert} = useAlert();
   const navigation = useNavigation();
+
+  // Get current theme mode for display
+  const getCurrentThemeMode = () => {
+    const savedTheme = cache.get<'dark' | 'light' | 'system'>(
+      'theme',
+      'preference',
+    );
+    if (savedTheme === 'dark') return 'Dark';
+    if (savedTheme === 'light') return 'Light';
+    return 'System';
+  };
 
   const handleSignOut = () => {
     alert({
@@ -84,7 +96,7 @@ export const SettingsScreen = () => {
         style={[styles.card, {backgroundColor: colors.backgroundSecondary}]}>
         <SettingItem
           title="Dark Mode"
-          subtitle="Switch between light and dark themes"
+          subtitle={`Current: ${getCurrentThemeMode()}`}
           rightComponent={
             <Switch
               value={isDark}
@@ -96,6 +108,11 @@ export const SettingsScreen = () => {
               thumbColor={isDark ? colors.primary : colors.border}
             />
           }
+        />
+        <SettingItem
+          title="Use System Theme"
+          subtitle="Follow your device's theme setting"
+          onPress={setSystemTheme}
         />
       </Card>
 

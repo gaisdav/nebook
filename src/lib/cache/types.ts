@@ -4,7 +4,8 @@ export type TCacheNames =
   | 'reviews'
   | 'users'
   | 'favoriteBooks'
-  | 'booksStatuses';
+  | 'booksStatuses'
+  | 'theme';
 
 export interface CacheOptions {
   ttl?: number | null; // Время жизни данных в миллисекундах (опционально)

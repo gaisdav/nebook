@@ -10,7 +10,7 @@ export const colors = {
     primaryLight: '#4DA3FF',
 
     // Background colors
-    background: '#FFFFFF',
+    background: '#FAFAFA',
     backgroundSecondary: '#F9F9F9',
     backgroundTertiary: '#F0F0F0',
 
@@ -55,7 +55,7 @@ export const colors = {
     primaryLight: '#4DA3FF',
 
     // Background colors
-    background: '#000000',
+    background: '#121212',
     backgroundSecondary: '#1C1C1E',
     backgroundTertiary: '#2C2C2E',
 

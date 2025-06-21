@@ -32,4 +32,10 @@ export const cacheKeys: Record<TCacheNames, any> = {
     booksStatusesData: ({statuses, userId}: TUserIdStatuses) =>
       `user-${userId}-statuses-${statuses.join('-')}`,
   },
+  /**
+   * Theme cache keys
+   */
+  theme: {
+    preference: 'theme-preference',
+  },
 };
