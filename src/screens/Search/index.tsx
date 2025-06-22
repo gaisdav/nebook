@@ -1,4 +1,4 @@
-import React, {useCallback, useLayoutEffect} from 'react';
+import React, {useCallback, useLayoutEffect, useState} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -10,48 +10,28 @@ import {
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
-import {IconButton} from '@/components/IconButton';
-import {Search} from 'lucide-react-native';
 import {ParamListBase, useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {Card} from '@/components/Card';
-import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {Skeleton} from '@/components/Skeleton';
 import {useTheme} from '@/hooks/common/useTheme';
 import {spacing, borderRadius, typography} from '@/lib/theme';
+import {useBook} from '@/hooks/books/useBooks';
+import {useDebounce} from '@/hooks/common/useDebounce';
 
 const {width} = Dimensions.get('window');
 
 export const SearchScreen = (): React.JSX.Element => {
-  const list = useBookStore(state => state.list);
-  const listLoading = useBookStore(state => state.listLoading);
-  const fetchList = useBookStore(state => state.fetchPaginatedList);
+  const [query, setQuery] = useState('');
+  const debouncedQuery = useDebounce(query, 500);
+  const {books, isBooksLoading, fetchNextPage, hasNextPage} = useBook({
+    fetchList: true,
+    query: debouncedQuery,
+  });
+
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
   const {colors} = useTheme();
-
-  const inputRef = React.useRef<string>('');
-
-  const submit = useCallback(
-    (page = 1) => {
-      if (!inputRef.current) {
-        return;
-      }
-
-      Keyboard.dismiss();
-      fetchList({query: inputRef.current, page});
-    },
-    [fetchList],
-  );
-
-  const handleSubmit = useCallback(() => {
-    submit();
-  }, [submit]);
-
-  const searchSubmitButton = useCallback(
-    () => <IconButton Icon={Search} onPress={handleSubmit} />,
-    [handleSubmit],
-  );
 
   const headerTitle = useCallback(
     () => (
@@ -69,29 +49,21 @@ export const SearchScreen = (): React.JSX.Element => {
         placeholder="Search"
         placeholderTextColor={colors.textTertiary}
         returnKeyType="search"
-        onChangeText={text => {
-          inputRef.current = text;
-        }}
-        onSubmitEditing={handleSubmit}
+        onChangeText={setQuery}
       />
     ),
-    [handleSubmit, colors],
+    [colors],
   );
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: searchSubmitButton,
       headerTitle: headerTitle,
     });
-  }, [headerTitle, navigation, searchSubmitButton]);
-
-  const hasMore = Boolean(
-    inputRef.current && list?.totalItems && list.totalItems > list.items.size,
-  );
+  }, [headerTitle, navigation]);
 
   const handleEndReached = () => {
-    if (hasMore && list) {
-      submit(list.page + 1);
+    if (hasNextPage && !isBooksLoading) {
+      fetchNextPage();
     }
   };
 
@@ -141,14 +113,14 @@ export const SearchScreen = (): React.JSX.Element => {
 
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
-      {listLoading ? (
+      {isBooksLoading ? (
         <View style={styles.loadingWrapper}>
           <Skeleton height={120} />
           <Skeleton height={120} />
           <Skeleton height={120} />
           <Skeleton height={120} />
         </View>
-      ) : !list ? (
+      ) : !books ? (
         <Text style={[styles.emptyText, {color: colors.textSecondary}]}>
           Type something to search
         </Text>
@@ -157,8 +129,8 @@ export const SearchScreen = (): React.JSX.Element => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContainer}
           onEndReached={handleEndReached}
-          data={Array.from(list.items.values())}
-          ListFooterComponent={hasMore ? ActivityIndicator : null}
+          data={Array.from(books.items.values())}
+          ListFooterComponent={hasNextPage ? ActivityIndicator : null}
           renderItem={renderItem}
         />
       )}

@@ -1,25 +1,19 @@
 import {IBook} from '@/data/books/enitites/book/types.ts';
 import {BookEntity} from '@/data/books/enitites/book/BookEntity.ts';
 import {IBookList, TGoogleBookSearch} from '@/data/books/store/types.ts';
+import { InfiniteData } from '@tanstack/react-query';
 
 export class GoogleBookItems implements IBookList {
   totalItems: number = 0;
   items: Map<string, IBook> = new Map();
-  limit: number = 0;
-  page: number = 0;
 
-  constructor(
-    info: {totalItems: number} & TGoogleBookSearch,
-    limit: number,
-    page: number,
-  ) {
-    this.limit = limit;
-    this.page = page;
-    this.totalItems = info.totalItems;
+  constructor(info: InfiniteData<TGoogleBookSearch, unknown>) {
+    this.totalItems = info.pages[0].totalItems;
 
-    info.items?.forEach(book => {
-      this.items.set(
-        book.id,
+    info.pages.forEach(page => {
+      page.items.forEach(book => {
+        this.items.set(
+          book.id,
         new BookEntity({
           id: book.id,
           publishedDate: book.volumeInfo.publishedDate,
@@ -35,8 +29,9 @@ export class GoogleBookItems implements IBookList {
           language: book.volumeInfo.language,
           pageCount: book.volumeInfo.pageCount,
           publisher: book.volumeInfo.publisher,
-        }),
-      );
+          }),
+        );
+      });
     });
   }
 }

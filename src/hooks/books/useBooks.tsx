@@ -7,7 +7,7 @@ import {
 import {IBook} from '@/data/books/enitites/book/types';
 import {BookEntity} from '@/data/books/enitites/book/BookEntity';
 import {fetchBooksQueryOptions} from '@/data/books/fetchBooksQueryOptions';
-import {IBookList, TGoogleBookSearch} from '@/data/books/store/types';
+import {TGoogleBookSearch} from '@/data/books/store/types';
 import {GoogleBookItems} from '@/data/books/decorators/GoogleBooks.decorator';
 
 export type UseBookParams = {
@@ -20,17 +20,7 @@ export type UseBookParams = {
   query?: string;
 };
 
-export const useBook = (
-  params: UseBookParams,
-): {
-  book: IBook;
-  isBookLoading: boolean;
-  bookError: Error | null;
-  books: IBookList;
-  isBooksLoading: boolean;
-  fetchNextPage: () => void;
-  hasNextPage: boolean;
-} => {
+export const useBook = (params: UseBookParams) => {
   const {
     bookId = '',
     userId = '',
@@ -56,20 +46,26 @@ export const useBook = (
     enabled: !!bookId && !isStatusLoading && !isFavoriteLoading && fetchBook,
   });
 
-  // TODO доработать запросы
   const {
     data: _books,
     isLoading: isBooksLoading,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery<TGoogleBookSearch, Error, TGoogleBookSearch>({
+    isFetchingNextPage,
+  } = useInfiniteQuery({
     ...fetchBooksQueryOptions({
       query,
       page: 1,
       limit: 10,
     }),
     enabled: fetchList,
-    getNextPageParam: (lastPage, pages) => lastPage.items.length + 1,
+    getNextPageParam: (lastPage: TGoogleBookSearch) => {
+      if (!lastPage.hasMore) {
+        return undefined;
+      }
+
+      return lastPage.nextPage;
+    },
     initialPageParam: 1,
   });
 
@@ -92,11 +88,12 @@ export const useBook = (
     isFavorite: Boolean(favoriteBookId),
   });
 
-  const books = new GoogleBookItems(
-    _books || {totalItems: 0, items: []},
-    10,
-    1,
-  );
+  const books = _books
+    ? new GoogleBookItems(_books)
+    : {
+        totalItems: 0,
+        items: new Map(),
+      };
 
   return {
     book,
@@ -106,5 +103,6 @@ export const useBook = (
     isBooksLoading,
     fetchNextPage,
     hasNextPage,
+    isFetchingNextPage,
   };
 };

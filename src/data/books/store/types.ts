@@ -49,13 +49,13 @@ export type TGoogleBook = {
 export interface IBookList {
   totalItems: number;
   items: Map<string, IBook>;
-  limit: number;
-  page: number;
 }
 
 export type TGoogleBookSearch = {
   totalItems: number;
   items: TGoogleBook[];
+  nextPage: number;
+  hasMore: boolean;
 };
 
 export interface BooksStateErrors {

@@ -27,8 +27,6 @@ export const fetchFavoriteBookByBookIdAndUserId = async ({
     .eq('book_provider_id', bookId)
     .maybeSingle();
 
-  console.log('data', data);
-
   if (error) {
     throw new Error(error.message);
   }
