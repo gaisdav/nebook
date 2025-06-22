@@ -16,9 +16,9 @@ export type Database = {
           created_at: string | null
           id: number
           parent_id: number | null
-          provider_id: string
           updated_at: string | null
           user_id: number
+          user_provider_id: string
         }
         Insert: {
           book_provider_id: string
@@ -26,9 +26,9 @@ export type Database = {
           created_at?: string | null
           id?: number
           parent_id?: number | null
-          provider_id: string
           updated_at?: string | null
           user_id: number
+          user_provider_id: string
         }
         Update: {
           book_provider_id?: string
@@ -36,9 +36,9 @@ export type Database = {
           created_at?: string | null
           id?: number
           parent_id?: number | null
-          provider_id?: string
           updated_at?: string | null
           user_id?: number
+          user_provider_id?: string
         }
         Relationships: [
           {
