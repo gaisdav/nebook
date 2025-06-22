@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
   },
   horizontalList: {
     paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
   },
   bookCard: {
     width: 120,
