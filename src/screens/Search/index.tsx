@@ -1,4 +1,9 @@
-import React, {useCallback, useLayoutEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useDeferredValue,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import {
   FlatList,
   StyleSheet,
@@ -18,16 +23,16 @@ import {Skeleton} from '@/components/Skeleton';
 import {useTheme} from '@/hooks/common/useTheme';
 import {spacing, borderRadius, typography} from '@/lib/theme';
 import {useBook} from '@/hooks/books/useBooks';
-import {useDebounce} from '@/hooks/common/useDebounce';
 
 const {width} = Dimensions.get('window');
 
 export const SearchScreen = (): React.JSX.Element => {
   const [query, setQuery] = useState('');
-  const debouncedQuery = useDebounce(query, 500);
+  const deferredQuery = useDeferredValue(query);
+
   const {books, isBooksLoading, fetchNextPage, hasNextPage} = useBook({
-    fetchList: true,
-    query: debouncedQuery,
+    fetchList: query.length > 0,
+    query: deferredQuery,
   });
 
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
@@ -147,7 +152,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   cardContainer: {
-    marginBottom: spacing.md,
+    marginBottom: spacing.xs,
   },
   cardContent: {
     flexDirection: 'row',

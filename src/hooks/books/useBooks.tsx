@@ -1,4 +1,8 @@
-import {useInfiniteQuery, useQuery} from '@tanstack/react-query';
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
 import {
   fetchBookByIdQueryOptions,
   fetchFavoriteBookByBookIdAndUserIdQueryOptions,
@@ -58,6 +62,7 @@ export const useBook = (params: UseBookParams) => {
       page: 1,
       limit: 10,
     }),
+    placeholderData: keepPreviousData,
     enabled: fetchList,
     getNextPageParam: (lastPage: TGoogleBookSearch) => {
       if (!lastPage.hasMore) {
