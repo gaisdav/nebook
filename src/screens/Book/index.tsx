@@ -19,6 +19,7 @@ import Toast from 'react-native-toast-message';
 import {getErrorMessage} from '@/lib/utils';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useBook} from '@/hooks/books/useBooks';
+import {Editor} from '@/components/Editor';
 
 const {width} = Dimensions.get('window');
 
@@ -404,6 +405,8 @@ export const BookScreen = (): React.JSX.Element => {
           </Text>
         </Card>
       )}
+
+      <Editor />
     </ScreenWrapper>
   );
 };
