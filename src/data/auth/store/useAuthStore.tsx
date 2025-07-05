@@ -1,26 +1,30 @@
 import {create} from 'zustand';
 import {TAuthState, TAuthActions} from './types';
-import {User} from '@supabase/supabase-js';
 import {TSignInParams, TSignUpParams} from '../repository/types';
 import {AuthService} from '../service';
 import {AuthRepository} from '../repository/AuthRepository';
 import {supabase} from '@/lib/supabase.config';
 import {getErrorMessage} from '@/lib/utils';
 import Toast from 'react-native-toast-message';
+import {TProfile} from '@/data/users/enitites/types';
+import {UsersRepository} from '@/data/users/repository/UsersRepository';
 
 const initialState: TAuthState = {
   isAuthenticated: null,
-  user: null,
+  profile: null,
   error: null,
 };
 
-const authService = new AuthService(new AuthRepository(supabase));
+const authService = new AuthService(
+  new AuthRepository(supabase),
+  new UsersRepository(supabase),
+);
 
 export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   ...initialState,
 
   setIsAuthenticated: (isAuthenticated: boolean) => set({isAuthenticated}),
-  setUser: (user: User) => set({user}),
+  setProfile: (profile: TProfile) => set({profile}),
   setError: (
     error: {
       signInError?: string | null;
@@ -30,10 +34,10 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   ) => set({error}),
   signIn: async (params: TSignInParams) => {
     try {
-      const user = await authService.signIn(params);
+      const profile = await authService.signIn(params);
 
-      set({user, isAuthenticated: true});
-      return user;
+      set({profile, isAuthenticated: true});
+      return profile;
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -45,9 +49,9 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   },
   signUp: async (params: TSignUpParams) => {
     try {
-      const user = await authService.signUp(params);
-      set({user, isAuthenticated: true});
-      return user;
+      const profile = await authService.signUp(params);
+      set({profile, isAuthenticated: true});
+      return profile;
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -60,7 +64,7 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   signOut: async () => {
     try {
       await authService.signOut();
-      set({user: null, isAuthenticated: false});
+      set({profile: null, isAuthenticated: false});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -72,11 +76,8 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   },
   initAuth: async () => {
     try {
-      const {data, error} = await supabase.auth.getSession();
-      if (error) {
-        throw error;
-      }
-      set({user: data.session?.user, isAuthenticated: !!data.session});
+      const {user, session} = await authService.getSession();
+      set({profile: user, isAuthenticated: !!session});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -87,3 +88,4 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
     }
   },
 }));
+

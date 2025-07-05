@@ -13,8 +13,6 @@ import {ParamListBase} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 
-
-
 const STATUS_CONFIG: Record<
   TBookStatus,
   {title: string; color: string; icon: string}
@@ -40,7 +38,7 @@ export const HomeScreen = (): React.JSX.Element => {
   const {colors} = useTheme();
   const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-  const {user} = useAuthStore();
+  const {profile} = useAuthStore();
   const favoriteBooks = useBookStore(state => state.favoriteBooks);
   const collection = useBookStore(state => state.collection);
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
@@ -52,19 +50,15 @@ export const HomeScreen = (): React.JSX.Element => {
 
   useFocusEffect(
     useCallback(() => {
-      if (user?.id) {
-        getFavoriteBooks(user.id);
+      if (profile?.id) {
+        getFavoriteBooks(profile.id);
 
         fetchBooksByStatuses({
-          userId: user.id,
-          statuses: [
-            'want-to-read',
-            'reading',
-            'read',
-          ],
+          userId: profile.id,
+          statuses: ['want-to-read', 'reading', 'read'],
         });
       }
-    }, [user?.id, getFavoriteBooks, fetchBooksByStatuses]),
+    }, [profile?.id, getFavoriteBooks, fetchBooksByStatuses]),
   );
 
   const handleBookPress = useCallback(
@@ -124,7 +118,9 @@ export const HomeScreen = (): React.JSX.Element => {
         book => book.status === status,
       );
 
-      if (booksInStatus.length === 0) {return null;}
+      if (booksInStatus.length === 0) {
+        return null;
+      }
 
       return (
         <View style={styles.section} key={status}>
@@ -154,7 +150,9 @@ export const HomeScreen = (): React.JSX.Element => {
   const renderFavoritesSection = useCallback(() => {
     const favoriteBooksArray = Array.from(favoriteBooks.values());
 
-    if (favoriteBooksArray.length === 0) {return null;}
+    if (favoriteBooksArray.length === 0) {
+      return null;
+    }
 
     return (
       <View style={styles.section}>

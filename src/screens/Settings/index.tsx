@@ -1,26 +1,17 @@
 import React from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Switch,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import {Text, View, StyleSheet, Switch, TouchableOpacity} from 'react-native';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {useTheme} from '@/hooks/common/useTheme';
 import {Card} from '@/components/Card';
 import {Button} from '@/components/Button';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useAlert} from '@/hooks/common/useAlert';
-import {useNavigation} from '@/hooks/common/useNavigation';
 import {cache} from '@/lib/cache/CacheService';
 
 export const SettingsScreen = () => {
   const {colors, isDark, toggleTheme, setSystemTheme} = useTheme();
   const {signOut} = useAuthStore();
   const {alert} = useAlert();
-  const navigation = useNavigation();
 
   // Get current theme mode for display
   const getCurrentThemeMode = () => {
@@ -28,8 +19,12 @@ export const SettingsScreen = () => {
       'theme',
       'preference',
     );
-    if (savedTheme === 'dark') {return 'Dark';}
-    if (savedTheme === 'light') {return 'Light';}
+    if (savedTheme === 'dark') {
+      return 'Dark';
+    }
+    if (savedTheme === 'light') {
+      return 'Light';
+    }
     return 'System';
   };
 

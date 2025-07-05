@@ -27,7 +27,7 @@ const {width} = Dimensions.get('window');
 export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
   const bookId = route.params?.bookId;
-  const {user} = useAuthStore();
+  const {profile} = useAuthStore();
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
   const statusLoading = useBookStore(state => state.statusLoading);
   const addToFavorite = useBookStore(state => state.addToFavorite);
@@ -37,18 +37,20 @@ export const BookScreen = (): React.JSX.Element => {
 
   const {book, isBookLoading, bookError} = useBook({
     bookId: bookId,
-    userId: user?.id,
+    userId: profile?.id,
     fetchBook: true,
     fetchFavorite: true,
     fetchStatus: true,
   });
 
-  const userId = String(user?.id);
+  const userId = Number(profile?.id);
 
   const {colors, isDark} = useTheme();
 
   const handleToggleFavorite = async () => {
-    if (!bookId || !book) {return;}
+    if (!bookId || !book) {
+      return;
+    }
 
     try {
       if (book.isFavorite) {
@@ -73,7 +75,9 @@ export const BookScreen = (): React.JSX.Element => {
   };
 
   const handleChangeStatus = async (status: TBookStatus) => {
-    if (!bookId || !book) {return;}
+    if (!bookId || !book) {
+      return;
+    }
 
     try {
       changeBookStatus({
@@ -92,7 +96,9 @@ export const BookScreen = (): React.JSX.Element => {
   };
 
   const handleResetStatus = async () => {
-    if (!bookId || !book) {return;}
+    if (!bookId || !book) {
+      return;
+    }
 
     try {
       await resetBookStatus({
@@ -156,18 +162,24 @@ export const BookScreen = (): React.JSX.Element => {
   }
 
   const formatYear = (dateString?: string) => {
-    if (!dateString) {return 'Unknown';}
+    if (!dateString) {
+      return 'Unknown';
+    }
     const year = new Date(dateString).getFullYear();
     return isNaN(year) ? 'Unknown' : year.toString();
   };
 
   const formatAuthors = (authors?: string[]) => {
-    if (!authors || authors.length === 0) {return null;}
+    if (!authors || authors.length === 0) {
+      return null;
+    }
     return authors.join(', ');
   };
 
   const formatGenres = (categories?: string[]) => {
-    if (!categories || categories.length === 0) {return null;}
+    if (!categories || categories.length === 0) {
+      return null;
+    }
     return categories.slice(0, 3).join(' • ');
   };
 

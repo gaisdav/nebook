@@ -1,9 +1,15 @@
-import { User } from "@supabase/supabase-js";
-import { TSignInParams, TSignUpParams } from "../repository/types";
+import { Session } from '@supabase/supabase-js';
+import { TSignInParams, TSignUpParams } from '../repository/types';
+import { TProfile } from '@/data/users/enitites/types';
+
+export type TSession = {
+  user: TProfile;
+  session: Session | null;
+};
 
 export type TAuthState = {
   isAuthenticated: boolean | null;
-  user: User | null;
+  profile: TProfile | null;
   error: {
     signInError?: string | null;
     signUpError?: string | null;
@@ -14,9 +20,9 @@ export type TAuthState = {
 
 export type TAuthActions = {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
-  setUser: (user: User) => void;
-  signIn: (params: TSignInParams) => Promise<User>;
-  signUp: (params: TSignUpParams) => Promise<User>;
+  setProfile: (profile: TProfile) => void;
+  signIn: (params: TSignInParams) => Promise<TProfile>;
+  signUp: (params: TSignUpParams) => Promise<TProfile>;
   signOut: () => Promise<void>;
   setError: (error: {
     signInError?: string | null;

@@ -6,20 +6,18 @@ import {spacing} from '@/lib/theme';
 import {useTheme} from '@/hooks/common/useTheme';
 
 export const ProfileScreen = () => {
-  const {user} = useAuthStore();
+  const {profile} = useAuthStore();
   const {colors} = useTheme();
 
   return (
     <ScreenWrapper scrollable>
-      {user && (
+      {profile && (
         <View
           style={[
             {flexDirection: 'column', alignItems: 'center', gap: spacing.sm},
           ]}>
-          <Text style={[{color: colors.text}]}>{user.email}</Text>
-          <Text style={[{color: colors.text}]}>
-            {user.user_metadata.full_name}
-          </Text>
+          <Text style={[{color: colors.text}]}>{profile.full_name}</Text>
+          <Text style={[{color: colors.text}]}>{profile.email}</Text>
         </View>
       )}
     </ScreenWrapper>
