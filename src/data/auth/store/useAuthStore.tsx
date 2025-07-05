@@ -9,7 +9,7 @@ import {getErrorMessage} from '@/lib/utils';
 import Toast from 'react-native-toast-message';
 
 const initialState: TAuthState = {
-  isAuthenticated: false,
+  isAuthenticated: null,
   user: null,
   error: null,
 };
@@ -71,11 +71,8 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
     }
   },
   initAuth: async () => {
-    console.log('initAuth');
     try {
       const {data, error} = await supabase.auth.getSession();
-      console.log('data', data);
-      console.log('error', error);
       if (error) {
         throw error;
       }

@@ -2,7 +2,7 @@ import { User } from "@supabase/supabase-js";
 import { TSignInParams, TSignUpParams } from "../repository/types";
 
 export type TAuthState = {
-  isAuthenticated: boolean;
+  isAuthenticated: boolean | null;
   user: User | null;
   error: {
     signInError?: string | null;

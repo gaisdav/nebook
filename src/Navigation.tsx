@@ -9,6 +9,7 @@ import {LoginScreen} from './screens/Login';
 import {RegisterScreen} from './screens/Register';
 import {useAuthStore} from './data/auth/store/useAuthStore.tsx';
 import {useTheme} from '@/hooks/common/useTheme.tsx';
+import {LoadingScreen} from './components/LoadingScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -79,7 +80,10 @@ function AuthenticatedStack() {
 export function Navigation() {
   const {isAuthenticated} = useAuthStore();
 
-  console.log('isAuthenticated', isAuthenticated);
+  // Show loading screen while authentication state is being determined
+  if (isAuthenticated === null) {
+    return <LoadingScreen />;
+  }
 
   // Conditionally render authenticated or unauthenticated stack
   return isAuthenticated ? <AuthenticatedStack /> : <UnauthenticatedStack />;
