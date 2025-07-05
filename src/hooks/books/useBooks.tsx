@@ -16,7 +16,7 @@ import {GoogleBookItems} from '@/data/books/decorators/GoogleBooks.decorator';
 
 export type UseBookParams = {
   bookId?: string;
-  userId?: string;
+  userId?: number;
   fetchList?: boolean;
   fetchBook?: boolean;
   fetchFavorite?: boolean;
@@ -27,7 +27,7 @@ export type UseBookParams = {
 export const useBook = (params: UseBookParams) => {
   const {
     bookId = '',
-    userId = '',
+    userId = 0,
     fetchList,
     fetchBook,
     fetchFavorite,

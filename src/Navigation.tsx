@@ -12,8 +12,26 @@ import {useTheme} from '@/hooks/common/useTheme.tsx';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export function Navigation() {
-  const {isAuthenticated} = useAuthStore();
+// Unauthenticated stack for login/register
+function UnauthenticatedStack() {
+  const {colors} = useTheme();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: colors.background,
+        },
+      }}>
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+    </Stack.Navigator>
+  );
+}
+
+// Authenticated stack for all other screens
+function AuthenticatedStack() {
   const {colors} = useTheme();
 
   return (
@@ -31,24 +49,19 @@ export function Navigation() {
         contentStyle: {
           backgroundColor: colors.background,
         },
-      }}
-      initialRouteName={isAuthenticated ? 'Tabs' : 'Login'}>
-      <Stack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{headerShown: false}}
-      />
-      <Stack.Screen
-        name="Register"
-        component={RegisterScreen}
-        options={{headerShown: false}}
-      />
+      }}>
       <Stack.Screen
         name="Tabs"
         component={Tabs}
         options={{headerShown: false}}
       />
-      <Stack.Screen name="Search" component={SearchScreen} />
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        options={{
+          headerShown: true,
+        }}
+      />
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
@@ -61,4 +74,13 @@ export function Navigation() {
       />
     </Stack.Navigator>
   );
+}
+
+export function Navigation() {
+  const {isAuthenticated} = useAuthStore();
+
+  console.log('isAuthenticated', isAuthenticated);
+
+  // Conditionally render authenticated or unauthenticated stack
+  return isAuthenticated ? <AuthenticatedStack /> : <UnauthenticatedStack />;
 }

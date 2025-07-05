@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Toast from 'react-native-toast-message';
 import {
   NavigationContainer,
@@ -6,16 +6,21 @@ import {
   DarkTheme,
 } from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
-import {StatusBar, useColorScheme} from 'react-native';
+import {StatusBar} from 'react-native';
 import {useTheme} from '@/hooks/common/useTheme.tsx';
 import {ThemeProvider} from './ThemeContext.tsx';
 import {GlobalAlert} from './components/GlobalAlert';
 import {QueryClient} from '@tanstack/react-query';
 import {QueryClientProvider} from '@tanstack/react-query';
+import {useAuthStore} from './data/auth/store/useAuthStore.tsx';
 
 function AppContent(): React.JSX.Element {
   const {colors, isDark} = useTheme();
-  const systemColorScheme = useColorScheme();
+  const {initAuth} = useAuthStore();
+
+  useEffect(() => {
+    initAuth();
+  }, []);
 
   // Create custom themes for NavigationContainer
   const customLightTheme = {

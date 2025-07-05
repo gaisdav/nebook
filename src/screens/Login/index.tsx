@@ -6,7 +6,6 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   ActivityIndicator,
   Keyboard,
   TouchableWithoutFeedback,
@@ -55,12 +54,7 @@ export const LoginScreen = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
-
-      // Navigate to Home screen and reset the navigation stack
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Tabs'}],
-      });
+      // Navigation will be handled automatically by the auth state change
     } catch (error) {
       const errorMessage = getErrorMessage(error);
 

@@ -3,12 +3,12 @@ import {ICacheService, CacheOptions, TCacheNames} from '@/lib/cache/types.ts';
 
 export const storage = new MMKV();
 
-class CacheService implements ICacheService {
+export class CacheService implements ICacheService {
   private formatKey(storeName: TCacheNames, key: string): string {
     return `${storeName}:${key}`;
   }
 
-  set<T>(
+  setItem<T>(
     storeName: TCacheNames,
     key: string,
     value: T,
@@ -24,7 +24,7 @@ class CacheService implements ICacheService {
     storage.set(formattedKey, JSON.stringify(dataToStore));
   }
 
-  get<T>(storeName: TCacheNames, key: string): T | null {
+  getItem<T>(storeName: TCacheNames, key: string): T | null {
     const formattedKey = this.formatKey(storeName, key);
     const storedData = storage.getString(formattedKey);
 
@@ -35,7 +35,7 @@ class CacheService implements ICacheService {
     try {
       const {value, timestamp, ttl} = JSON.parse(storedData);
       if (ttl && Date.now() - timestamp > ttl) {
-        this.delete(storeName, key);
+        this.removeItem(storeName, key);
         return null;
       }
       return value;
@@ -44,7 +44,7 @@ class CacheService implements ICacheService {
     }
   }
 
-  delete(storeName: TCacheNames, key: string) {
+  removeItem(storeName: TCacheNames, key: string) {
     const formattedKey = this.formatKey(storeName, key);
     storage.delete(formattedKey);
   }

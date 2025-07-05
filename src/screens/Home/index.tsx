@@ -5,7 +5,7 @@ import {useTheme} from '@/hooks/common/useTheme';
 import {useBookStore} from '@/data/books/store/useBookStore';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {Card} from '@/components/Card';
-import {IBook} from '@/data/books/enitites/book/types';
+import {IBook, TBookStatus} from '@/data/books/enitites/book/types';
 import {Skeleton} from '@/components/Skeleton';
 import {spacing, borderRadius, typography} from '@/lib/theme';
 import {useNavigation} from '@react-navigation/native';
@@ -13,28 +13,23 @@ import {ParamListBase} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useFocusEffect} from '@react-navigation/native';
 
-// Status constants
-const BOOK_STATUS = {
-  WANT_TO_READ: 3,
-  READING: 2,
-  READ: 1,
-} as const;
+
 
 const STATUS_CONFIG: Record<
-  number,
+  TBookStatus,
   {title: string; color: string; icon: string}
 > = {
-  [BOOK_STATUS.WANT_TO_READ]: {
+  'want-to-read': {
     title: 'Want to Read',
     color: '#FF6B6B',
     icon: '📚',
   },
-  [BOOK_STATUS.READING]: {
+  reading: {
     title: 'Currently Reading',
     color: '#4ECDC4',
     icon: '📖',
   },
-  [BOOK_STATUS.READ]: {
+  read: {
     title: 'Finished Reading',
     color: '#45B7D1',
     icon: '✅',
@@ -63,9 +58,9 @@ export const HomeScreen = (): React.JSX.Element => {
         fetchBooksByStatuses({
           userId: user.id,
           statuses: [
-            BOOK_STATUS.WANT_TO_READ,
-            BOOK_STATUS.READING,
-            BOOK_STATUS.READ,
+            'want-to-read',
+            'reading',
+            'read',
           ],
         });
       }
@@ -123,13 +118,13 @@ export const HomeScreen = (): React.JSX.Element => {
   );
 
   const renderStatusSection = useCallback(
-    (status: number) => {
+    (status: TBookStatus) => {
       const config = STATUS_CONFIG[status];
       const booksInStatus = Array.from(collection.values()).filter(
         book => book.status === status,
       );
 
-      if (booksInStatus.length === 0) return null;
+      if (booksInStatus.length === 0) {return null;}
 
       return (
         <View style={styles.section} key={status}>
@@ -159,7 +154,7 @@ export const HomeScreen = (): React.JSX.Element => {
   const renderFavoritesSection = useCallback(() => {
     const favoriteBooksArray = Array.from(favoriteBooks.values());
 
-    if (favoriteBooksArray.length === 0) return null;
+    if (favoriteBooksArray.length === 0) {return null;}
 
     return (
       <View style={styles.section}>
@@ -211,9 +206,9 @@ export const HomeScreen = (): React.JSX.Element => {
   ) : (
     <ScreenWrapper scrollable>
       {renderFavoritesSection()}
-      {renderStatusSection(BOOK_STATUS.WANT_TO_READ)}
-      {renderStatusSection(BOOK_STATUS.READING)}
-      {renderStatusSection(BOOK_STATUS.READ)}
+      {renderStatusSection('want-to-read')}
+      {renderStatusSection('reading')}
+      {renderStatusSection('read')}
     </ScreenWrapper>
   );
 };

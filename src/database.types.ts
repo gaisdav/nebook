@@ -18,7 +18,6 @@ export type Database = {
           parent_id: number | null
           updated_at: string | null
           user_id: number
-          user_provider_id: string
         }
         Insert: {
           book_provider_id: string
@@ -28,7 +27,6 @@ export type Database = {
           parent_id?: number | null
           updated_at?: string | null
           user_id: number
-          user_provider_id: string
         }
         Update: {
           book_provider_id?: string
@@ -38,7 +36,6 @@ export type Database = {
           parent_id?: number | null
           updated_at?: string | null
           user_id?: number
-          user_provider_id?: string
         }
         Relationships: [
           {
@@ -57,76 +54,69 @@ export type Database = {
           },
         ]
       }
-      book_statuses: {
-        Row: {
-          created_at: string | null
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string | null
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string | null
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
       favorite_books: {
         Row: {
           book_provider_id: string
           created_at: string | null
           id: number
-          user_provider_id: string
+          updated_at: string | null
+          user_id: number
         }
         Insert: {
           book_provider_id: string
           created_at?: string | null
           id?: number
-          user_provider_id: string
+          updated_at?: string | null
+          user_id: number
         }
         Update: {
           book_provider_id?: string
           created_at?: string | null
           id?: number
-          user_provider_id?: string
+          updated_at?: string | null
+          user_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "favorite_books_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_books: {
         Row: {
           book_provider_id: string
           created_at: string | null
           id: number
-          status_id: number | null
+          status: Database["public"]["Enums"]["book_status"]
           updated_at: string | null
-          user_provider_id: string
+          user_id: number
         }
         Insert: {
           book_provider_id: string
           created_at?: string | null
           id?: number
-          status_id?: number | null
+          status: Database["public"]["Enums"]["book_status"]
           updated_at?: string | null
-          user_provider_id: string
+          user_id: number
         }
         Update: {
           book_provider_id?: string
           created_at?: string | null
           id?: number
-          status_id?: number | null
+          status?: Database["public"]["Enums"]["book_status"]
           updated_at?: string | null
-          user_provider_id?: string
+          user_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "user_books_status_id_fkey"
-            columns: ["status_id"]
+            foreignKeyName: "user_books_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "book_statuses"
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -172,7 +162,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      book_status: "read" | "reading" | "want-to-read"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -287,6 +277,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      book_status: ["read", "reading", "want-to-read"],
+    },
   },
 } as const

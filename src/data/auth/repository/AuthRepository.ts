@@ -1,7 +1,7 @@
-import { TAuthRepository, TSignUpParams } from "./types";
-import { TSignInParams } from "./types";
-import { SupabaseClient, User } from "@supabase/supabase-js";
-import { Database } from "@/database.types";
+import { TAuthRepository, TSignUpParams } from './types';
+import { TSignInParams } from './types';
+import { SupabaseClient, User } from '@supabase/supabase-js';
+import { Database } from '@/database.types';
 
 export class AuthRepository implements TAuthRepository {
   constructor(private repository: SupabaseClient<Database>) {}

@@ -11,7 +11,7 @@ export type TBooksService = {
   searchBooks: (params: TGoogleBookSearchParams) => Promise<IBookList>;
   addToFavorite: (params: TUserIdBookId) => Promise<void>;
   removeFromFavorite: (params: TUserIdBookId) => Promise<void>;
-  fetchFavoriteBooks: (userId: string) => Promise<IBook[]>;
+  fetchFavoriteBooks: (userId: number) => Promise<IBook[]>;
   fetchBookById: (params: TUserIdBookId) => Promise<IBook>;
   fetchBooksByStatuses: (params: TUserIdStatuses) => Promise<IBook[]>;
 

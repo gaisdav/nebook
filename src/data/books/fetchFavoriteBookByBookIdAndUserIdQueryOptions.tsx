@@ -3,7 +3,7 @@ import {supabase} from '@/lib/supabase.config';
 
 export const fetchFavoriteBookByBookIdAndUserIdQueryOptions = (
   bookId: string,
-  userId: string,
+  userId: number,
 ) => {
   return {
     queryKey: fetchFavoriteBookByBookIdAndUserIdQueryKey(bookId, userId),
@@ -13,7 +13,7 @@ export const fetchFavoriteBookByBookIdAndUserIdQueryOptions = (
 
 export const fetchFavoriteBookByBookIdAndUserIdQueryKey = (
   bookId: string,
-  userId: string,
+  userId: number,
 ) => [fetchFavoriteBookByBookIdAndUserIdQueryOptions.name, bookId, userId];
 
 export const fetchFavoriteBookByBookIdAndUserId = async ({
@@ -22,8 +22,8 @@ export const fetchFavoriteBookByBookIdAndUserId = async ({
 }: TUserIdBookId): Promise<string | null> => {
   const {data, error} = await supabase
     .from('favorite_books')
-    .select('id, user_provider_id, book_provider_id')
-    .eq('user_provider_id', userId)
+    .select('id, user_id, book_provider_id')
+    .eq('user_id', userId)
     .eq('book_provider_id', bookId)
     .maybeSingle();
 
@@ -31,7 +31,5 @@ export const fetchFavoriteBookByBookIdAndUserId = async ({
     throw new Error(error.message);
   }
 
-  const bookProviderId = data?.book_provider_id || null;
-
-  return bookProviderId;
+  return data?.book_provider_id || null;
 };

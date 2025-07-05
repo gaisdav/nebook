@@ -1,4 +1,5 @@
 export type TCacheNames =
+  | 'auth'
   | 'books'
   | 'profile'
   | 'reviews'
@@ -12,13 +13,13 @@ export interface CacheOptions {
 }
 
 export interface ICacheService {
-  set<T>(
+  setItem<T>(
     storeName: TCacheNames,
     key: string,
     value: T,
     options?: CacheOptions,
   ): void;
-  get<T>(storeName: TCacheNames, key: string): T | null;
-  delete(storeName: TCacheNames, key: string): void;
+  getItem<T>(storeName: TCacheNames, key: string): T | null;
+  removeItem(storeName: TCacheNames, key: string): void;
   clear(storeName: TCacheNames): void;
 }

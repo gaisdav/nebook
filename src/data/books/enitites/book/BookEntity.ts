@@ -1,4 +1,4 @@
-import { IBook } from './types.ts';
+import {IBook, TBookStatus} from './types.ts';
 
 export class BookEntity implements IBook {
   id: string;
@@ -12,7 +12,7 @@ export class BookEntity implements IBook {
   categories?: string[];
   language?: string;
   pageCount?: number;
-  status: number | null;
+  status: TBookStatus | null;
   isFavorite?: boolean = false;
 
   constructor(bookInfo: IBook) {

@@ -1,27 +1,29 @@
+import { TBookStatus } from './enitites/book/types';
+
 export type TGoogleBookSearchParams = {
     query: string;
     page?: number;
     limit?: number;
   };
-  
+
   export type TChangeStatus = {
-    userId: string;
+    userId: number;
     bookId: string;
-    status: number;
+    status: TBookStatus;
   };
-  
+
   export type TUserIdBookId = {
-    userId: string;
+    userId: number;
     bookId: string;
   };
-  
+
   export type TUserIdStatuses = {
-    userId: string;
-    statuses: number[];
+    userId: number;
+    statuses: TBookStatus[];
   };
-  
+
   export type TUserIdBookIdStatuses = {
     userId: number;
     bookId: string;
-    statuses: number[];
+    statuses: TBookStatus[];
   };

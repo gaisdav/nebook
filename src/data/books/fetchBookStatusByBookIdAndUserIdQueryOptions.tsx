@@ -1,9 +1,10 @@
 import {TUserIdBookId} from './types';
 import {supabase} from '@/lib/supabase.config';
+import {TBookStatus} from '@/data/books/enitites/book/types.ts';
 
 export const fetchBookStatusByBookIdAndUserIdQueryOptions = (
   bookId: string,
-  userId: string,
+  userId: number,
 ) => {
   return {
     queryKey: fetchBookStatusByBookIdAndUserIdQueryKey(bookId, userId),
@@ -13,16 +14,16 @@ export const fetchBookStatusByBookIdAndUserIdQueryOptions = (
 
 export const fetchBookStatusByBookIdAndUserIdQueryKey = (
   bookId: string,
-  userId: string,
+  userId: number,
 ) => [fetchBookStatusByBookIdAndUserIdQueryKey.name, bookId, userId];
 
 export const fetchBookStatus = async (
   params: TUserIdBookId,
-): Promise<number | null> => {
+): Promise<TBookStatus | null> => {
   const {data, error} = await supabase
     .from('user_books')
-    .select('status_id')
-    .eq('user_provider_id', params.userId)
+    .select('status')
+    .eq('user_id', params.userId)
     .eq('book_provider_id', params.bookId)
     .maybeSingle();
 
@@ -30,7 +31,5 @@ export const fetchBookStatus = async (
     throw new Error(error.message);
   }
 
-  const status = data?.status_id || null;
-
-  return status;
+  return data?.status || null;
 };

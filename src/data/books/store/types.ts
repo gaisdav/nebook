@@ -88,7 +88,7 @@ export interface BooksActions {
 
   addToFavorite: (params: TUserIdBookId) => void;
   removeFromFavorite: (params: TUserIdBookId) => void;
-  getFavoriteBooks: (userId: string) => void;
+  getFavoriteBooks: (userId: number) => void;
 
   changeBookStatus: (params: TChangeStatus) => void;
   resetBookStatus: (params: TUserIdBookId) => void;

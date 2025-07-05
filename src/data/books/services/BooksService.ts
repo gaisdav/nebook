@@ -23,11 +23,10 @@ export class BooksService implements TBooksService {
       query: '',
     },
   ) {
-    const {limit = defaultLimit, page = defaultPage} = params;
 
     const data = await this.repository.fetchBooks(params);
 
-    return new GoogleBookItems(data, limit, page);
+    return new GoogleBookItems(data);
   }
 
   async fetchBookById(params: TUserIdBookId): Promise<IBook> {
@@ -69,7 +68,7 @@ export class BooksService implements TBooksService {
     await this.repository.removeFromFavorite(params);
   }
 
-  async fetchFavoriteBooks(userId: string): Promise<IBook[]> {
+  async fetchFavoriteBooks(userId: number): Promise<IBook[]> {
     const bookIds = await this.repository.getFavoriteBooksData(userId);
 
     return Promise.all(

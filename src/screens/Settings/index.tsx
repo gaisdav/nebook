@@ -24,12 +24,12 @@ export const SettingsScreen = () => {
 
   // Get current theme mode for display
   const getCurrentThemeMode = () => {
-    const savedTheme = cache.get<'dark' | 'light' | 'system'>(
+    const savedTheme = cache.getItem<'dark' | 'light' | 'system'>(
       'theme',
       'preference',
     );
-    if (savedTheme === 'dark') return 'Dark';
-    if (savedTheme === 'light') return 'Light';
+    if (savedTheme === 'dark') {return 'Dark';}
+    if (savedTheme === 'light') {return 'Light';}
     return 'System';
   };
 
@@ -42,7 +42,7 @@ export const SettingsScreen = () => {
       onConfirm: async () => {
         try {
           await signOut();
-          navigation.navigate('Login');
+          // Navigation will be handled automatically by the auth state change
         } catch (error) {
           alert({
             title: 'Error',
@@ -124,7 +124,7 @@ export const SettingsScreen = () => {
           isLast
         />
       </Card>
-      {/* 
+      {/*
       <Text style={[styles.sectionTitle, {color: colors.text}]}>Account</Text>
 
       <Card

@@ -1,5 +1,5 @@
 import {TCacheNames} from '@/lib/cache/types.ts';
-import {TUserIdBookId, TUserIdStatuses} from '@/data/books/services/types.ts';
+import {TUserIdBookId, TUserIdStatuses} from '@/data/books/types.ts';
 
 export const cacheKeys: Record<TCacheNames, any> = {
   /**
@@ -38,4 +38,8 @@ export const cacheKeys: Record<TCacheNames, any> = {
   theme: {
     preference: 'theme-preference',
   },
+  /**
+   * Auth cache keys
+   */
+  auth: {},
 };

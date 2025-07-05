@@ -20,15 +20,9 @@ import {getErrorMessage} from '@/lib/utils';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useBook} from '@/hooks/books/useBooks';
 import {Editor} from '@/components/Editor';
+import {TBookStatus} from '@/data/books/enitites/book/types.ts';
 
 const {width} = Dimensions.get('window');
-
-// Status constants - assuming these are the status IDs from the database
-const BOOK_STATUS = {
-  WANT_TO_READ: 1,
-  READING: 2,
-  READ: 3,
-} as const;
 
 export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
@@ -54,7 +48,7 @@ export const BookScreen = (): React.JSX.Element => {
   const {colors, isDark} = useTheme();
 
   const handleToggleFavorite = async () => {
-    if (!bookId || !book) return;
+    if (!bookId || !book) {return;}
 
     try {
       if (book.isFavorite) {
@@ -78,11 +72,11 @@ export const BookScreen = (): React.JSX.Element => {
     }
   };
 
-  const handleChangeStatus = async (status: number) => {
-    if (!bookId || !book) return;
+  const handleChangeStatus = async (status: TBookStatus) => {
+    if (!bookId || !book) {return;}
 
     try {
-      await changeBookStatus({
+      changeBookStatus({
         bookId: bookId,
         userId: userId,
         status: status,
@@ -98,7 +92,7 @@ export const BookScreen = (): React.JSX.Element => {
   };
 
   const handleResetStatus = async () => {
-    if (!bookId || !book) return;
+    if (!bookId || !book) {return;}
 
     try {
       await resetBookStatus({
@@ -115,7 +109,7 @@ export const BookScreen = (): React.JSX.Element => {
     }
   };
 
-  const getStatusButtonStyle = (status: number) => {
+  const getStatusButtonStyle = (status: TBookStatus) => {
     const isActive = book?.status === status;
     return {
       width: 48,
@@ -127,7 +121,7 @@ export const BookScreen = (): React.JSX.Element => {
     };
   };
 
-  const getStatusIconColor = (status: number) => {
+  const getStatusIconColor = (status: TBookStatus) => {
     const isActive = book?.status === status;
     return isActive ? colors.textInverse : colors.textSecondary;
   };
@@ -162,18 +156,18 @@ export const BookScreen = (): React.JSX.Element => {
   }
 
   const formatYear = (dateString?: string) => {
-    if (!dateString) return 'Unknown';
+    if (!dateString) {return 'Unknown';}
     const year = new Date(dateString).getFullYear();
     return isNaN(year) ? 'Unknown' : year.toString();
   };
 
   const formatAuthors = (authors?: string[]) => {
-    if (!authors || authors.length === 0) return null;
+    if (!authors || authors.length === 0) {return null;}
     return authors.join(', ');
   };
 
   const formatGenres = (categories?: string[]) => {
-    if (!categories || categories.length === 0) return null;
+    if (!categories || categories.length === 0) {return null;}
     return categories.slice(0, 3).join(' • ');
   };
 
@@ -245,36 +239,36 @@ export const BookScreen = (): React.JSX.Element => {
           {/* Want to Read Button */}
           <IconButton
             Icon={BookMarked}
-            onPress={() => handleChangeStatus(BOOK_STATUS.WANT_TO_READ)}
+            onPress={() => handleChangeStatus('want-to-read')}
             loading={statusLoading}
-            iconColor={getStatusIconColor(BOOK_STATUS.WANT_TO_READ)}
-            style={getStatusButtonStyle(BOOK_STATUS.WANT_TO_READ)}
+            iconColor={getStatusIconColor('want-to-read')}
+            style={getStatusButtonStyle('want-to-read')}
             textStyle={{
-              color: getStatusIconColor(BOOK_STATUS.WANT_TO_READ),
+              color: getStatusIconColor('want-to-read'),
             }}
           />
 
           {/* Reading Button */}
           <IconButton
             Icon={BookOpen}
-            onPress={() => handleChangeStatus(BOOK_STATUS.READING)}
+            onPress={() => handleChangeStatus('reading')}
             loading={statusLoading}
-            iconColor={getStatusIconColor(BOOK_STATUS.READING)}
-            style={getStatusButtonStyle(BOOK_STATUS.READING)}
+            iconColor={getStatusIconColor('reading')}
+            style={getStatusButtonStyle('reading')}
             textStyle={{
-              color: getStatusIconColor(BOOK_STATUS.READING),
+              color: getStatusIconColor('reading'),
             }}
           />
 
           {/* Read Button */}
           <IconButton
             Icon={CheckCircle}
-            onPress={() => handleChangeStatus(BOOK_STATUS.READ)}
+            onPress={() => handleChangeStatus('read')}
             loading={statusLoading}
-            iconColor={getStatusIconColor(BOOK_STATUS.READ)}
-            style={getStatusButtonStyle(BOOK_STATUS.READ)}
+            iconColor={getStatusIconColor('read')}
+            style={getStatusButtonStyle('read')}
             textStyle={{
-              color: getStatusIconColor(BOOK_STATUS.READ),
+              color: getStatusIconColor('read'),
             }}
           />
 

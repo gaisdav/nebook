@@ -74,10 +74,11 @@ export const RegisterScreen = () => {
         fullName: data.name,
       });
 
-      // Navigate to Home screen and reset the navigation stack
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'Tabs'}],
+      // Navigation will be handled automatically by the auth state change
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Account created successfully. Please verify your email.',
       });
     } catch (error) {
       const errorMessage = getErrorMessage(error);
@@ -96,6 +97,7 @@ export const RegisterScreen = () => {
 
   useEffect(() => {
     if (error) {
+      console.log('error', error);
       Toast.show({
         type: 'error',
         text1: 'Error',

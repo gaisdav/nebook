@@ -1,3 +1,5 @@
+import {Database} from '@/database.types.ts';
+
 export interface IBook {
   id: string;
   title: string;
@@ -10,8 +12,8 @@ export interface IBook {
   categories?: string[];
   language?: string;
   pageCount?: number;
-  status?: number | null;
+  status?: TBookStatus | null;
   isFavorite?: boolean;
 }
 
-export type TBookStatus = 'read' | 'reading' | 'want-to-read';
+export type TBookStatus = Database['public']['Enums']['book_status']

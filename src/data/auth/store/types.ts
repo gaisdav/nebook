@@ -8,6 +8,7 @@ export type TAuthState = {
     signInError?: string | null;
     signUpError?: string | null;
     signOutError?: string | null;
+    initAuthError?: string | null;
   } | null;
 };
 
@@ -22,4 +23,5 @@ export type TAuthActions = {
     signUpError?: string | null;
     signOutError?: string | null;
   } | null) => void;
+  initAuth: () => Promise<void>;
 };

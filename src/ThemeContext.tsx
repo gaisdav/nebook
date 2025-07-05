@@ -24,7 +24,7 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({
   // Load saved theme preference on startup
   useEffect(() => {
     const loadSavedTheme = () => {
-      const savedTheme = cache.get<'dark' | 'light' | 'system'>(
+      const savedTheme = cache.getItem<'dark' | 'light' | 'system'>(
         'theme',
         'preference',
       );
@@ -46,9 +46,9 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({
 
   // Update theme when system color scheme changes (only if using system preference)
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded) {return;}
 
-    const savedTheme = cache.get<'dark' | 'light' | 'system'>(
+    const savedTheme = cache.getItem<'dark' | 'light' | 'system'>(
       'theme',
       'preference',
     );
@@ -63,7 +63,7 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({
 
     // Save the theme preference
     const themePreference = newIsDark ? 'dark' : 'light';
-    cache.set('theme', 'preference', themePreference);
+    cache.setItem('theme', 'preference', themePreference);
   };
 
   const setSystemTheme = () => {
@@ -71,7 +71,7 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({
     setIsDark(newIsDark);
 
     // Save the system preference
-    cache.set('theme', 'preference', 'system');
+    cache.setItem('theme', 'preference', 'system');
   };
 
   const themeColors = getThemeColors(isDark);
