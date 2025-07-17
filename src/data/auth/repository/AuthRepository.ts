@@ -17,7 +17,7 @@ export class AuthRepository implements TAuthRepository {
     }
 
     if (!data.user) {
-      throw new Error('User not found');
+      throw new Error('Sign in user not found');
     }
 
     return data.user;
@@ -40,7 +40,7 @@ export class AuthRepository implements TAuthRepository {
     }
 
     if (!data.user) {
-      throw new Error('User not found');
+      throw new Error('Sign up user not found');
     }
 
     return data.user;

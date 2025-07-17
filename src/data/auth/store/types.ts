@@ -3,8 +3,8 @@ import { TSignInParams, TSignUpParams } from '../repository/types';
 import { TProfile } from '@/data/users/enitites/types';
 
 export type TSession = {
-  user: TProfile;
-  session: Session | null;
+  user?: TProfile | null;
+  session?: Session | null;
 };
 
 export type TAuthState = {

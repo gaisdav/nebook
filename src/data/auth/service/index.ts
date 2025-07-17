@@ -10,7 +10,7 @@ export class AuthService implements TAuthService {
 
   async signIn(params: TSignInParams): Promise<TProfile> {
     const user = await this.repository.signIn(params);
-    const userData = await this.usersService.getUser(user.id);
+    const userData = await this.usersService.getUserByProviderId(user.id);
 
     return {
       ...userData,
@@ -20,7 +20,7 @@ export class AuthService implements TAuthService {
 
   async signUp(params: TSignUpParams): Promise<TProfile> {
     const user = await this.repository.signUp(params);
-    const userData = await this.usersService.getUser(user.id);
+    const userData = await this.usersService.getUserByProviderId(user.id);
 
     return {
       ...userData,
@@ -33,20 +33,19 @@ export class AuthService implements TAuthService {
   }
 
   async getSession(): Promise<TSession> {
-    const session = await this.repository.getSession();
+    const sessionData = await this.repository.getSession();
 
-    if (!session.user) {
-      throw new Error('User not found');
+    let userData = null;
+    if (sessionData.user) {
+      userData = {
+        ...(await this.usersService.getUserByProviderId(sessionData.user.id)),
+        providerUserData: sessionData.user,
+      };
     }
 
-    const userData = await this.usersService.getUser(session.user.id);
-
     return {
-      user: {
-        ...userData,
-        providerUserData: session.user,
-      },
-      session: session.session,
+      user: userData,
+      session: sessionData.session,
     };
   }
 }

@@ -7,12 +7,12 @@ export const fetchBooks = async (params: TGoogleBookSearchParams): Promise<TGoog
 
   const url = constructGoogleBooksUrl(query, limit, page);
   const result = await fetch(url.toString());
-  
+
   if (!result.ok) {
     const error = await result.text();
     throw new Error(error);
   }
-  
+
   const books = await result.json();
 
   return {
@@ -34,8 +34,9 @@ export const fetchBooksQueryOptions = (params: TGoogleBookSearchParams) => {
   return {
     queryKey: fetchBooksQueryKey({query, limit, page}),
     queryFn: ({pageParam}: {pageParam: number}) => {
+      // TODO use bookService
       return fetchBooks({query, limit, page: pageParam});
     },
-    
+
   };
-}; 
+};

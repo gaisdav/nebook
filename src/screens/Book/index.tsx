@@ -21,6 +21,8 @@ import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useBook} from '@/hooks/books/useBooks';
 import {Editor} from '@/components/Editor';
 import {TBookStatus} from '@/data/books/enitites/book/types.ts';
+import {useComments, useCreateComment} from '@/hooks/comments/useComments';
+import WebView from 'react-native-webview';
 
 const {width} = Dimensions.get('window');
 
@@ -28,6 +30,17 @@ export const BookScreen = (): React.JSX.Element => {
   const route = useRoute<RouteProp<RootStackParamList>>();
   const bookId = route.params?.bookId;
   const {profile} = useAuthStore();
+  const {
+    comments,
+    isLoading: commentsLoading,
+    refetch: refetchComments,
+  } = useComments({
+    bookId: bookId ?? '',
+  });
+  const {createComment, isLoading: createCommentLoading} = useCreateComment({
+    bookId: bookId ?? '',
+    userId: profile?.id ?? 0,
+  });
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
   const statusLoading = useBookStore(state => state.statusLoading);
   const addToFavorite = useBookStore(state => state.addToFavorite);
@@ -35,12 +48,11 @@ export const BookScreen = (): React.JSX.Element => {
   const changeBookStatus = useBookStore(state => state.changeBookStatus);
   const resetBookStatus = useBookStore(state => state.resetBookStatus);
 
-  const {book, isBookLoading, bookError} = useBook({
+  const {book, isBookLoading, refetchBook} = useBook({
     bookId: bookId,
     userId: profile?.id,
     fetchBook: true,
     fetchFavorite: true,
-    fetchStatus: true,
   });
 
   const userId = Number(profile?.id);
@@ -64,6 +76,7 @@ export const BookScreen = (): React.JSX.Element => {
           userId: userId,
         });
       }
+      await refetchBook();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       Toast.show({
@@ -80,11 +93,12 @@ export const BookScreen = (): React.JSX.Element => {
     }
 
     try {
-      changeBookStatus({
+      await changeBookStatus({
         bookId: bookId,
         userId: userId,
         status: status,
       });
+      await refetchBook();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       Toast.show({
@@ -105,6 +119,7 @@ export const BookScreen = (): React.JSX.Element => {
         bookId: bookId,
         userId: userId,
       });
+      await refetchBook();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       Toast.show({
@@ -185,6 +200,24 @@ export const BookScreen = (): React.JSX.Element => {
 
   const genres = formatGenres(book.categories);
   const authors = formatAuthors(book.authors);
+
+  const handleCreateComment = async (content: string) => {
+    if (!bookId || !userId) {
+      return;
+    }
+
+    content = content.trim();
+
+    await createComment({
+      bookId: bookId,
+      userId: userId,
+      content: content,
+    });
+
+    await refetchComments();
+  };
+
+  console.log(comments);
 
   return (
     <ScreenWrapper scrollable>
@@ -412,7 +445,36 @@ export const BookScreen = (): React.JSX.Element => {
         </Card>
       )}
 
-      <Editor />
+      {commentsLoading && (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Loading comments...</Text>
+        </View>
+      )}
+
+      {comments.map(comment => (
+        <View key={comment.id} style={{height: 100}}>
+          <WebView
+            originWhitelist={['*']}
+            source={{
+              html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>${comment.content}
+</body>
+</html>`,
+            }}
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
+            style={{flex: 1, height: 100}}
+          />
+        </View>
+      ))}
+
+      {book && <Editor onSave={handleCreateComment} />}
     </ScreenWrapper>
   );
 };

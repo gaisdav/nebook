@@ -86,10 +86,10 @@ export interface BooksActions {
   fetchBook: (params: TUserIdBookId) => void;
   fetchBooksByStatuses: (params: TUserIdStatuses) => void;
 
-  addToFavorite: (params: TUserIdBookId) => void;
-  removeFromFavorite: (params: TUserIdBookId) => void;
-  getFavoriteBooks: (userId: number) => void;
+  addToFavorite: (params: TUserIdBookId) => Promise<void>;
+  removeFromFavorite: (params: TUserIdBookId) => Promise<void>;
+  getFavoriteBooks: (userId: number) => Promise<void>;
 
-  changeBookStatus: (params: TChangeStatus) => void;
-  resetBookStatus: (params: TUserIdBookId) => void;
+  changeBookStatus: (params: TChangeStatus) => Promise<void>;
+  resetBookStatus: (params: TUserIdBookId) => Promise<void>;
 }

@@ -1,5 +1,6 @@
 import { TUser } from "../enitites/types";
 
 export type TUsersService = {
-  getUser: (userProviderId: string) => Promise<TUser>;
+  getUserByProviderId: (userProviderId: string) => Promise<TUser>;
+  getUserById: (userId: number) => Promise<TUser>;
 };

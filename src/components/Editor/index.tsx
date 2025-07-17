@@ -1,19 +1,15 @@
 import React, {useRef, useMemo} from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {htmlContent} from './editorHtml';
 import {Button} from '../Button';
 import {useTheme} from '@/hooks/common/useTheme';
 
-export const Editor = () => {
+export type EditorProps = {
+  onSave: (content: string) => void;
+};
+
+export const Editor = ({onSave}: EditorProps) => {
   const webViewRef = useRef<WebView>(null);
   const {colors, isDark} = useTheme();
 
@@ -59,10 +55,7 @@ export const Editor = () => {
     try {
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'editorContentSaved') {
-        console.log('Received editor content from WebView:', data.content);
-        // Here you would typically save 'data.content' to your app's state or send to a backend
-        // Replaced alert with a console log for better user experience in a mobile app
-        console.log('Content Saved! Check console for full content.');
+        onSave(data.content);
       }
     } catch (error) {
       console.error(
@@ -86,27 +79,25 @@ export const Editor = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        {/* WebView for the editor - toolbar is now inside htmlContent */}
-        <WebView
-          ref={webViewRef}
-          originWhitelist={['*']}
-          source={{html: themedHtmlContent}}
-          onMessage={handleMessage}
-          javaScriptEnabled
-          domStorageEnabled
-          scrollEnabled={true}
-          nestedScrollEnabled={true}
-          style={styles.webView}
-        />
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
+      {/* WebView for the editor - toolbar is now inside htmlContent */}
+      <WebView
+        ref={webViewRef}
+        originWhitelist={['*']}
+        source={{html: themedHtmlContent}}
+        onMessage={handleMessage}
+        javaScriptEnabled
+        domStorageEnabled
+        scrollEnabled={true}
+        nestedScrollEnabled={true}
+        style={styles.webView}
+      />
 
-        {/* Save button - remains in React Native to interact with WebView */}
-        <Button onPress={handleSave}>
-          <Text>Save</Text>
-        </Button>
-      </View>
-    </TouchableWithoutFeedback>
+      {/* Save button - remains in React Native to interact with WebView */}
+      <Button onPress={handleSave}>
+        <Text>Save</Text>
+      </Button>
+    </View>
   );
 };
 

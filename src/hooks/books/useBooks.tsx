@@ -45,9 +45,9 @@ export const useBook = (params: UseBookParams) => {
     enabled: !!bookId && !!userId && fetchFavorite,
   });
 
-  const {data, isLoading, error} = useQuery({
-    ...fetchBookByIdQueryOptions(bookId),
-    enabled: !!bookId && !isStatusLoading && !isFavoriteLoading && fetchBook,
+  const {data: book, isLoading, error, refetch: refetchBook} = useQuery({
+    ...fetchBookByIdQueryOptions(bookId, userId),
+    enabled: !!bookId && fetchBook && !!userId,
   });
 
   const {
@@ -74,25 +74,6 @@ export const useBook = (params: UseBookParams) => {
     initialPageParam: 1,
   });
 
-  const book: IBook = new BookEntity({
-    id: data?.id || '',
-    title: data?.volumeInfo.title || '',
-    subtitle: data?.volumeInfo.subtitle || '',
-    authors: data?.volumeInfo.authors || [],
-    publisher: data?.volumeInfo.publisher || '',
-    description: data?.volumeInfo.description || '',
-    publishedDate: data?.volumeInfo.publishedDate,
-    cover: data?.volumeInfo.imageLinks?.thumbnail?.replace(
-      'http://',
-      'https://',
-    ),
-    categories: data?.volumeInfo.categories || [],
-    language: data?.volumeInfo.language,
-    pageCount: data?.volumeInfo.pageCount,
-    status,
-    isFavorite: Boolean(favoriteBookId),
-  });
-
   const books = _books
     ? new GoogleBookItems(_books)
     : {
@@ -102,6 +83,7 @@ export const useBook = (params: UseBookParams) => {
 
   return {
     book,
+    refetchBook,
     isBookLoading: isLoading,
     bookError: error,
     books,
@@ -109,5 +91,7 @@ export const useBook = (params: UseBookParams) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isStatusLoading,
+    isFavoriteLoading,
   };
 };

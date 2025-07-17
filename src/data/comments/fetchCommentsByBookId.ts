@@ -1,24 +1,19 @@
-import {supabase} from '@/lib/supabase.config';
-import {Tables} from '@/database.types';
+import { supabase } from '@/lib/supabase.config';
+import { CommentsService } from './service';
+import { CommentsRepository } from './repository/CommentsRepository';
+import { TCommentsPaginationResult } from './service/types';
+import { UsersRepository } from '@/data/users/repository/UsersRepository';
 
-export type TComment = Tables<'book_comments'>;
+const commentsRepository = new CommentsRepository(supabase);
+const usersRepository = new UsersRepository(supabase);
+const commentsService = new CommentsService(commentsRepository, usersRepository);
 
-export const fetchCommentsByBookId = async (bookId: string): Promise<TComment[]> => {
-  const {data, error} = await supabase
-    .from('book_comments')
-    .select('*')
-    .eq('book_provider_id', bookId)
-    .order('created_at', {ascending: false});
-
-  if (error) {
-    throw new Error(`Failed to fetch comments: ${error.message}`);
-  }
-
-  return data || [];
+export const fetchCommentsByBookId = async (bookId: string): Promise<TCommentsPaginationResult> => {
+  return commentsService.getBookComments(bookId);
 };
 
 export const fetchCommentsByBookIdQueryKey = (bookId: string) => [
-  fetchCommentsByBookIdQueryOptions.name,
+  fetchCommentsByBookIdQueryKey.name,
   bookId,
 ];
 

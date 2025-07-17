@@ -1,35 +1,12 @@
-import {supabase} from '@/lib/supabase.config';
-import {TablesInsert} from '@/database.types';
+import { TCreateCommentParams } from "./enitites/types";
+import { CommentsService } from "./service";
+import { CommentsRepository } from "./repository/CommentsRepository";
+import { supabase } from "@/lib/supabase.config";
+import { UsersRepository } from "@/data/users/repository/UsersRepository";
 
-export type TCreateCommentParams = {
-  bookId: string;
-  userId: number;
-  content: string;
-  parentId?: number | null;
-};
-
-export const createComment = async (params: TCreateCommentParams) => {
-  const {bookId, userId, content, parentId = null} = params;
-
-  const commentData: TablesInsert<'book_comments'> = {
-    book_provider_id: bookId,
-    user_id: userId,
-    content,
-    parent_id: parentId,
-  };
-
-  const {data, error} = await supabase
-    .from('book_comments')
-    .insert(commentData)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to create comment: ${error.message}`);
-  }
-
-  return data;
-};
+const commentsRepository = new CommentsRepository(supabase);
+const usersRepository = new UsersRepository(supabase);
+const commentsService = new CommentsService(commentsRepository, usersRepository);
 
 export const createCommentMutationOptionsKey = (
   bookId: string,
@@ -42,6 +19,6 @@ export const createCommentMutationOptions = (
 ) => {
   return {
     mutationKey: createCommentMutationOptionsKey(bookId, userId),
-    mutationFn: (params: TCreateCommentParams) => createComment(params),
+    mutationFn: (params: TCreateCommentParams) => commentsService.createComment(params),
   };
 };

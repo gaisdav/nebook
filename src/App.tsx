@@ -6,13 +6,20 @@ import {
   DarkTheme,
 } from '@react-navigation/native';
 import {Navigation} from './Navigation.tsx';
-import {StatusBar} from 'react-native';
+import {AppState, AppStateStatus, Platform, StatusBar} from 'react-native';
 import {useTheme} from '@/hooks/common/useTheme.tsx';
 import {ThemeProvider} from './ThemeContext.tsx';
 import {GlobalAlert} from './components/GlobalAlert';
 import {QueryClient} from '@tanstack/react-query';
 import {QueryClientProvider} from '@tanstack/react-query';
 import {useAuthStore} from './data/auth/store/useAuthStore.tsx';
+import {focusManager} from '@tanstack/react-query';
+
+function onAppStateChange(status: AppStateStatus) {
+  if (Platform.OS !== 'web') {
+    focusManager.setFocused(status === 'active');
+  }
+}
 
 function AppContent(): React.JSX.Element {
   const {colors, isDark} = useTheme();
@@ -20,6 +27,12 @@ function AppContent(): React.JSX.Element {
 
   useEffect(() => {
     initAuth();
+  }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', onAppStateChange);
+
+    return () => subscription.remove();
   }, []);
 
   // Create custom themes for NavigationContainer

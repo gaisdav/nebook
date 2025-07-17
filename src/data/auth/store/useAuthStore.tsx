@@ -76,8 +76,8 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
   },
   initAuth: async () => {
     try {
-      const {user, session} = await authService.getSession();
-      set({profile: user, isAuthenticated: !!session});
+      const {user} = await authService.getSession();
+      set({profile: user, isAuthenticated: !!user});
     } catch (error) {
       Toast.show({
         type: 'error',
@@ -88,4 +88,3 @@ export const useAuthStore = create<TAuthState & TAuthActions>(set => ({
     }
   },
 }));
-
