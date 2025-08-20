@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useBookStore} from '@/data/books/store/useBookStore.tsx';
 import {ScreenWrapper} from '@/components/ScreenWrapper';
 import {Image, StyleSheet, Text, View, Dimensions} from 'react-native';
@@ -19,10 +19,10 @@ import Toast from 'react-native-toast-message';
 import {getErrorMessage} from '@/lib/utils';
 import {useAuthStore} from '@/data/auth/store/useAuthStore';
 import {useBook} from '@/hooks/books/useBooks';
-import {Editor} from '@/components/Editor';
 import {TBookStatus} from '@/data/books/enitites/book/types.ts';
 import {useComments, useCreateComment} from '@/hooks/comments/useComments';
-import WebView from 'react-native-webview';
+import {Input} from '@/components/Input';
+import {Button} from '@/components/Button';
 
 const {width} = Dimensions.get('window');
 
@@ -41,6 +41,7 @@ export const BookScreen = (): React.JSX.Element => {
     bookId: bookId ?? '',
     userId: profile?.id ?? 0,
   });
+  const [comment, setComment] = useState('');
   const favoriteLoading = useBookStore(state => state.favoriteLoading);
   const statusLoading = useBookStore(state => state.statusLoading);
   const addToFavorite = useBookStore(state => state.addToFavorite);
@@ -201,12 +202,12 @@ export const BookScreen = (): React.JSX.Element => {
   const genres = formatGenres(book.categories);
   const authors = formatAuthors(book.authors);
 
-  const handleCreateComment = async (content: string) => {
+  const handleCreateComment = async () => {
     if (!bookId || !userId) {
       return;
     }
 
-    content = content.trim();
+    const content = comment.trim();
 
     await createComment({
       bookId: bookId,
@@ -214,10 +215,10 @@ export const BookScreen = (): React.JSX.Element => {
       content: content,
     });
 
+    setComment('');
+
     await refetchComments();
   };
-
-  console.log(comments);
 
   return (
     <ScreenWrapper scrollable>
@@ -452,29 +453,42 @@ export const BookScreen = (): React.JSX.Element => {
       )}
 
       {comments.map(comment => (
-        <View key={comment.id} style={{height: 100}}>
-          <WebView
-            originWhitelist={['*']}
-            source={{
-              html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-</head>
-<body>${comment.content}
-</body>
-</html>`,
-            }}
-            scrollEnabled={true}
-            nestedScrollEnabled={true}
-            style={{flex: 1, height: 100}}
-          />
+        <View
+          key={comment.id}
+          style={{
+            flexDirection: 'column',
+            gap: spacing.md,
+            padding: spacing.md,
+            borderRadius: borderRadius.lg,
+            backgroundColor: colors.backgroundSecondary,
+            borderWidth: 1,
+            borderColor: colors.border,
+            marginBottom: spacing.md,
+          }}>
+          <Text style={{color: colors.text}}>{comment.content}</Text>
+          <Text style={{color: colors.textSecondary}}>
+            {comment.created_at}
+          </Text>
         </View>
       ))}
 
-      {book && <Editor onSave={handleCreateComment} />}
+      {book && (
+        <View style={{flexDirection: 'column', gap: spacing.md}}>
+          <Input
+            placeholder="Add a comment"
+            multiline
+            numberOfLines={4}
+            maxLength={40}
+            value={comment}
+            onChangeText={setComment}
+          />
+          <Button
+            onPress={handleCreateComment}
+            disabled={comment.length === 0 || createCommentLoading}>
+            <Text>Save</Text>
+          </Button>
+        </View>
+      )}
     </ScreenWrapper>
   );
 };
