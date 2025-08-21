@@ -23,6 +23,7 @@ import {TBookStatus} from '@/data/books/enitites/book/types.ts';
 import {useComments, useCreateComment} from '@/hooks/comments/useComments';
 import {Input} from '@/components/Input';
 import {Button} from '@/components/Button';
+import {format, isToday} from 'date-fns';
 
 const {width} = Dimensions.get('window');
 
@@ -219,6 +220,8 @@ export const BookScreen = (): React.JSX.Element => {
 
     await refetchComments();
   };
+
+  console.log(comments);
 
   return (
     <ScreenWrapper scrollable>
@@ -466,9 +469,28 @@ export const BookScreen = (): React.JSX.Element => {
             marginBottom: spacing.md,
           }}>
           <Text style={{color: colors.text}}>{comment.content}</Text>
-          <Text style={{color: colors.textSecondary}}>
-            {comment.created_at}
-          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            {comment.user && (
+              <Text
+                style={{
+                  color: colors.textSecondary,
+                }}>
+                {comment.user.full_name}
+              </Text>
+            )}
+            {comment.created_at && (
+              <Text style={{color: colors.textSecondary}}>
+                {isToday(new Date(comment.created_at))
+                  ? format(new Date(comment.created_at), 'HH:mm')
+                  : format(new Date(comment.created_at), 'dd MMM yyyy HH:mm')}
+              </Text>
+            )}
+          </View>
         </View>
       ))}
 
@@ -478,9 +500,12 @@ export const BookScreen = (): React.JSX.Element => {
             placeholder="Add a comment"
             multiline
             numberOfLines={4}
-            maxLength={40}
+            maxLength={1024}
             value={comment}
             onChangeText={setComment}
+            style={{
+              height: 100,
+            }}
           />
           <Button
             onPress={handleCreateComment}
